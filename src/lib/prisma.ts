@@ -2,16 +2,22 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import * as mariadb from 'mariadb'
 
+// Force the database URL into the environment so Prisma's fallback engine logic
+// absolutely uses the external IP, bypassing Dokploy's potential ENV configurations.
+process.env.DATABASE_URL = 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix';
+
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-// We forcefully use the external IP in case Dokploy internal DNS (kasbonfastprix1-...) fails 
-// and falls back to 127.0.0.1
-const mariadbString = 'mariadb://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix';
+console.log("PRISMA ADAPTER INIT (HARDCODED OBJECT)");
 
-console.log("PRISMA ADAPTER INIT:");
-console.log("-> mariadbString:", mariadbString);
-
-const pool = mariadb.createPool(mariadbString);
+const pool = mariadb.createPool({
+  host: "148.230.101.38",
+  port: 3034,
+  user: "kasbon-fastprix",
+  password: "Admin1122",
+  database: "kasbon-fastprix",
+  connectionLimit: 10
+});
 
 const adapter = new PrismaMariaDb(pool as any)
 
