@@ -5,16 +5,12 @@ import * as mariadb from 'mariadb'
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
 const connectionString = process.env.DATABASE_URL || 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix'
+const mariadbString = connectionString.replace('mysql://', 'mariadb://')
 
-const dbUrl = new URL(connectionString)
-const pool = mariadb.createPool({
-  host: dbUrl.hostname,
-  port: parseInt(dbUrl.port) || 3306,
-  user: decodeURIComponent(dbUrl.username),
-  password: decodeURIComponent(dbUrl.password),
-  database: dbUrl.pathname.substring(1),
-  connectionLimit: 10
-})
+console.log("PRISMA ADAPTER INIT:");
+console.log("-> mariadbString:", mariadbString);
+
+const pool = mariadb.createPool(mariadbString);
 
 const adapter = new PrismaMariaDb(pool as any)
 
