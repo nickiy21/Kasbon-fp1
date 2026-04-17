@@ -65,7 +65,7 @@ export default function Navbar() {
                 </div>
                 <div className="hidden flex-col sm:flex">
                   <span className="text-xs font-semibold text-zinc-900 dark:text-white">
-                    {session?.user.name}
+                    {session?.user?.name}
                   </span>
                   <span className="text-[10px] text-zinc-500 uppercase">
                     {(session?.user as any).role}

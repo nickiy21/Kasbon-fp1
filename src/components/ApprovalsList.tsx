@@ -49,8 +49,8 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
           <KasbonCard 
             request={req} 
             showActions={true}
-            onVerify={session?.user.role === "LEADER" ? (id: string, approve: boolean) => handleAction(id, approve, 'leader') : null}
-            onApprove={session?.user.role === "OWNER" || session?.user.role === "ADMIN" ? (id: string, approve: boolean) => handleAction(id, approve, 'owner') : null}
+            onVerify={(session?.user as any)?.role === "LEADER" ? (id: string, approve: boolean) => handleAction(id, approve, 'leader') : undefined}
+            onApprove={(session?.user as any)?.role === "OWNER" || (session?.user as any)?.role === "ADMIN" ? (id: string, approve: boolean) => handleAction(id, approve, 'owner') : undefined}
           />
         </div>
       ))}
