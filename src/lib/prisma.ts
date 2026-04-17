@@ -2,21 +2,25 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import * as mariadb from 'mariadb'
 
-// Force the database URL into the environment so Prisma's fallback engine logic
-// absolutely uses the external IP, bypassing Dokploy's potential ENV configurations.
-process.env.DATABASE_URL = 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix';
-
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-console.log("PRISMA ADAPTER INIT (HARDCODED OBJECT)");
+const connectionString = process.env.DATABASE_URL || 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix';
+const dbUrl = new URL(connectionString);
+
+console.log("PRISMA ADAPTER INIT (DYNAMIC OBJECT V2)");
+console.log("-> Initializing DB URL:", connectionString);
+console.log("-> Parsed Host:", dbUrl.hostname);
+console.log("-> Parsed Port:", dbUrl.port || 3306);
+console.log("-> Parsed DB:", dbUrl.pathname.substring(1));
 
 const pool = mariadb.createPool({
-  host: "148.230.101.38",
-  port: 3034,
-  user: "kasbon-fastprix",
-  password: "Admin1122",
-  database: "kasbon-fastprix",
-  connectionLimit: 10
+  host: dbUrl.hostname,
+  port: parseInt(dbUrl.port) || 3306,
+  user: dbUrl.username ? decodeURIComponent(dbUrl.username) : undefined,
+  password: dbUrl.password ? decodeURIComponent(dbUrl.password) : undefined,
+  database: dbUrl.pathname.substring(1),
+  connectionLimit: 10,
+  connectTimeout: 20000 // Increase timeout to 20s
 });
 
 const adapter = new PrismaMariaDb(pool as any)
