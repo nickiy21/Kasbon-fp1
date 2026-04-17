@@ -4,8 +4,9 @@ import * as mariadb from 'mariadb'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-const connectionString = process.env.DATABASE_URL || 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix'
-const mariadbString = connectionString.replace('mysql://', 'mariadb://')
+// We forcefully use the external IP in case Dokploy internal DNS (kasbonfastprix1-...) fails 
+// and falls back to 127.0.0.1
+const mariadbString = 'mariadb://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix';
 
 console.log("PRISMA ADAPTER INIT:");
 console.log("-> mariadbString:", mariadbString);
