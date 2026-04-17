@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  EMPLOYEE
+  LEADER
+  ADMIN
+  OWNER
+}
+
+enum Division {
+  DOORSMER
+  MARKETING
+  MEKANIK
+}
+
+enum KasbonStatus {
+  PENDING
+  LEADER_VERIFIED
+  APPROVED
+  REJECTED
+  DISBURSED
+  PAID
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  username      String    @unique
+  password      String
+  role          Role      @default(EMPLOYEE)
+  division      Division?
+  
+  employeeProfile EmployeeProfile?
+  
+  // Relations for Kasbon
+  requests            KasbonRequest[] @relation("EmployeeRequests")
+  leaderVerifications KasbonRequest[] @relation("LeaderVerifications")
+  ownerApprovals      KasbonRequest[] @relation("OwnerApprovals")
+}
+
+model EmployeeProfile {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  
+  basicSalary   Float
+  joinDate      DateTime
+  spStatus      Boolean   @default(false) // true if has active SP
+  isBlacklisted Boolean   @default(false)
+}
+
+model KasbonRequest {
+  id                  String       @id @default(cuid())
+  amount              Float
+  purpose             String
+  isMedicalEmergency  Boolean      @default(false)
+  repaymentMonths     Int          @default(1)
+  status              KasbonStatus @default(PENDING)
+  submissionDate      DateTime     @default(now())
+  
+  // New fields for the updated form
+  employeeName        String?
+  division            Division?    @default(DOORSMER)
+  joinDate            DateTime?
+  spStatus            Boolean?     @default(false)
+  isPreviousPaid      Boolean?     @default(true)
+  basicSalary         Float?
+  
+  // Employee who requested
+  employeeId          String
+  employee            User         @relation("EmployeeRequests", fields: [employeeId], references: [id])
+  
+  // Leader (SPV) who verified
+  leaderId            String?
+  leader              User?        @relation("LeaderVerifications", fields: [leaderId], references: [id])
+  
+  // Owner who approved
+  ownerId             String?
+  owner               User?        @relation("OwnerApprovals", fields: [ownerId], references: [id])
+  
+  // Rejection reason
+  rejectionReason     String?
+}
