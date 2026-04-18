@@ -22,8 +22,8 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
   // Form states for validation
   const [joinDate, setJoinDate] = useState("");
   const [spStatus, setSpStatus] = useState("TIDAK");
+  const [spDescription, setSpDescription] = useState("");
   const [isPreviousPaid, setIsPreviousPaid] = useState("YA");
-  const [basicSalary, setBasicSalary] = useState(initialSalary.toString());
   const [requestAmount, setRequestAmount] = useState("");
 
   const formatNumber = (val: string) => {
@@ -37,12 +37,9 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
   };
 
   const tenureInMonths = joinDate ? differenceInMonths(new Date(), new Date(joinDate)) : 0;
-  const salaryNum = parseFloat(parseNumber(basicSalary)) || 0;
   const amountNum = parseFloat(parseNumber(requestAmount)) || 0;
-  const maxAllowedAmount = salaryNum * 0.2;
-  const isAmountValid = amountNum <= maxAllowedAmount;
   
-  const isEligible = tenureInMonths >= 6 && spStatus === "TIDAK" && isPreviousPaid === "YA" && isAmountValid;
+  const isEligible = tenureInMonths >= 2 && isPreviousPaid === "YA" && amountNum > 0;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,7 +49,12 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
     }
 
     if (!isEligible) {
-      setMessage({ type: "error", text: "Mohon maaf, Anda belum memenuhi kriteria SOP atau nominal melebihi batas 20% gaji." });
+      setMessage({ type: "error", text: "Mohon maaf, Anda belum memenuhi kriteria SOP (Min. 2 bulan kerja & Kasbon sebelumnya lunas)." });
+      return;
+    }
+
+    if (spStatus === "YA" && !spDescription) {
+      setMessage({ type: "error", text: "Mohon isi deskripsi/penjelasan masa SP Anda." });
       return;
     }
 
@@ -60,9 +62,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
     setMessage(null);
 
     const form = e.currentTarget;
-    // Convert formatted numbers back to raw numbers for submission
     const formData = new FormData(form);
-    formData.set("basicSalary", parseNumber(basicSalary));
     formData.set("amount", parseNumber(requestAmount));
 
     const result = await submitKasbon(formData);
@@ -73,6 +73,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
       form.reset();
       setJoinDate("");
       setRequestAmount("");
+      setSpDescription("");
     } else {
       setMessage({ type: "error", text: result.error || "Gagal mengirim pengajuan." });
     }
@@ -90,16 +91,15 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
               <div className="pb-4 border-b border-zinc-800">
                 <p className="font-black text-white uppercase tracking-widest mb-2">1. KRITERIA KELAYAKAN</p>
                 <ul className="space-y-2 list-disc pl-4 text-zinc-400">
-                  <li>Karyawan telah bekerja minimal 6 bulan secara kontinu.</li>
-                  <li>Tidak sedang dalam masa surat peringatan (SP).</li>
+                  <li>Karyawan telah bekerja minimal 2 bulan secara kontinu.</li>
+                  <li>Masa SP (Surat Peringatan) tetap dapat mengajukan dengan penjelasan.</li>
                   <li>Saldo kasbon sebelumnya sudah lunas 100%.</li>
                 </ul>
               </div>
 
               <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">2. BATAS MAKSIMAL & NOMINAL</p>
+                <p className="font-black text-white uppercase tracking-widest mb-2">2. KEPERLUAN NOMINAL</p>
                 <ul className="space-y-2 list-disc pl-4 text-zinc-400">
-                  <li>Maksimal Kasbon: 20% dari gaji pokok.</li>
                   <li>Hanya untuk keperluan mendesak (Kesehatan, Pendidikan, Musibah).</li>
                   <li>Bukan untuk gaya hidup atau cicilan konsumtif.</li>
                 </ul>
@@ -126,13 +126,6 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   <li>Dipotong langsung dari gaji bulan berjalan secara Lunas.</li>
                   <li>Maksimal tenor 2 bulan agar tidak membebani slip gaji.</li>
                 </ul>
-              </div>
-
-              <div className="bg-red-600/20 p-4 border border-red-600/30 rounded-xl">
-                <p className="font-black text-red-500 uppercase tracking-widest mb-2 text-center text-[13px]">6. SANKSI & LARANGAN</p>
-                <p className="italic text-center text-zinc-300">
-                  Dilarang kasbon antar rekan kerja. Penyalahgunaan untuk hal negatif sanksi disiplin berat & hak kasbon dicabut permanen.
-                </p>
               </div>
             </div>
             <button 
@@ -208,28 +201,11 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   value={joinDate}
                   onChange={(e) => setJoinDate(e.target.value)}
                   required
-                  className={`block w-full rounded-xl border-2 py-3 px-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${joinDate && tenureInMonths < 6 ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-white`}
+                  className={`block w-full rounded-xl border-2 py-3 px-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${joinDate && tenureInMonths < 2 ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-white`}
                 />
-                {joinDate && tenureInMonths < 6 && (
-                  <p className="mt-1 text-[10px] font-black text-red-600 animate-pulse uppercase">* Harus bekerja minimal 6 bulan</p>
+                {joinDate && tenureInMonths < 2 && (
+                  <p className="mt-1 text-[10px] font-black text-red-600 animate-pulse uppercase">* Harus bekerja minimal 2 bulan</p>
                 )}
-              </div>
-
-              <div>
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
-                  Gaji Pokok Terakhir
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-red-600">Rp</span>
-                  <input
-                    type="text"
-                    name="basicSalary"
-                    required
-                    value={formatNumber(basicSalary)}
-                    onChange={(e) => setBasicSalary(parseNumber(e.target.value))}
-                    className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -285,15 +261,31 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                 </div>
               </div>
             </div>
+
+            {/* SP DESCRIPTION FIELD */}
+            {spStatus === "YA" && (
+              <div className="animate-in fade-in slide-in-from-top-4 duration-300">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                  Penjelasan Masa SP (Wajib diisi)
+                </label>
+                <textarea
+                  name="spDescription"
+                  required
+                  value={spDescription}
+                  onChange={(e) => setSpDescription(e.target.value)}
+                  rows={3}
+                  className="block w-full rounded-2xl border-2 border-red-600/30 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                  placeholder="Berikan alasan atau penjelasan mengenai status SP Anda saat ini agar dapat dipertimbangkan oleh SPV/Admin..."
+                />
+              </div>
+            )}
             
-            {(!isEligible && (joinDate || spStatus === "YA" || isPreviousPaid === "TIDAK" || requestAmount)) && (
+            {(isEligible && (joinDate || isPreviousPaid === "TIDAK")) && (
               <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-[10px] font-black uppercase text-red-600 border border-red-200">
                 <AlertCircle size={16} />
                 <div className="flex flex-col gap-1">
-                   {tenureInMonths < 6 && <p>• Belum Bekerja 6 Bulan</p>}
-                   {spStatus === "YA" && <p>• Sedang Dalam Masa SP</p>}
+                   {tenureInMonths < 2 && <p>• Belum Bekerja 2 Bulan</p>}
                    {isPreviousPaid === "TIDAK" && <p>• Kasbon Sebelumnya Belum Lunas</p>}
-                   {!isAmountValid && <p>• Nominal Melebihi Batas 20% Gaji (Maks. Rp{maxAllowedAmount.toLocaleString('id-ID')})</p>}
                 </div>
               </div>
             )}
@@ -318,13 +310,10 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                     required
                     value={formatNumber(requestAmount)}
                     onChange={(e) => setRequestAmount(parseNumber(e.target.value))}
-                    className={`block w-full rounded-xl border-2 py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${!isAmountValid ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-white`}
+                    className={`block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white`}
                     placeholder="Contoh: 500.000"
                   />
                 </div>
-                {!isAmountValid && (
-                   <p className="mt-1 text-[10px] font-black text-red-600 animate-pulse uppercase">* MAKSIMAL RP{Math.floor(maxAllowedAmount).toLocaleString('id-ID')} (20% GAJI)</p>
-                )}
               </div>
 
               <div>

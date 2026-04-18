@@ -90,4 +90,5 @@ model KasbonRequest {
   
   // Rejection reason
   rejectionReason     String?
+  spDescription       String?
 }

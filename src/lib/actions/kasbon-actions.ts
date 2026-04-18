@@ -29,9 +29,10 @@ export async function submitKasbon(formData: FormData): Promise<KasbonResponse> 
   const spStatusInput = formData.get("spStatus") === "YA";
   const isPreviousPaidInput = formData.get("isPreviousPaid") === "YA";
   const basicSalaryInput = parseFloat(formData.get("basicSalary") as string);
+  const spDescription = formData.get("spDescription") as string;
 
   // Validation
-  if (isNaN(amount) || !purpose || !employeeName || isNaN(basicSalaryInput)) {
+  if (isNaN(amount) || !purpose || !employeeName) {
     return { success: false, error: "Data tidak lengkap atau format salah." };
   }
 
@@ -50,8 +51,9 @@ export async function submitKasbon(formData: FormData): Promise<KasbonResponse> 
         division: division,
         joinDate: joinDate && !isNaN(joinDate.getTime()) ? joinDate : null,
         spStatus: spStatusInput,
+        spDescription: spDescription || null,
         isPreviousPaid: isPreviousPaidInput,
-        basicSalary: basicSalaryInput,
+        basicSalary: isNaN(basicSalaryInput) ? null : basicSalaryInput,
         isMedicalEmergency: false,
       } as any,
     });
