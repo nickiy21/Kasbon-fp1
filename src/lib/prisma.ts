@@ -4,7 +4,7 @@ import * as mariadb from 'mariadb'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-const connectionString = process.env.EXTERNAL_DB_URL || 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3034/kasbon-fastprix';
+const connectionString = process.env.DATABASE_URL || 'mysql://kasbon-fastprix:Admin1122@148.230.101.38:3306/kasbon-fastprix';
 const dbUrl = new URL(connectionString);
 
 console.log("PRISMA ADAPTER INIT (DYNAMIC OBJECT V2)");
