@@ -21,9 +21,9 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
 
   // Form states for validation
   const [joinDate, setJoinDate] = useState("");
-  const [spStatus, setSpStatus] = useState("TIDAK");
+  const [spStatus, setSpStatus] = useState<string>("TIDAK");
   const [spDescription, setSpDescription] = useState("");
-  const [isPreviousPaid, setIsPreviousPaid] = useState("YA");
+  const [isPreviousPaid, setIsPreviousPaid] = useState<string>("YA");
   const [requestAmount, setRequestAmount] = useState("");
 
   const formatNumber = (val: string) => {
@@ -280,7 +280,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
               </div>
             )}
             
-            {(isEligible && (joinDate || isPreviousPaid === "TIDAK")) && (
+            {(!isEligible && (joinDate || isPreviousPaid === "TIDAK")) && (
               <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-[10px] font-black uppercase text-red-600 border border-red-200">
                 <AlertCircle size={16} />
                 <div className="flex flex-col gap-1">
