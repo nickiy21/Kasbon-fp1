@@ -71,7 +71,12 @@ export async function submitKasbon(formData: FormData): Promise<KasbonResponse> 
 
 export async function verifyByLeader(requestId: string, approve: boolean): Promise<KasbonResponse> {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user.role !== "LEADER" && session.user.role !== "ADMIN")) {
+  if (!session) return { success: false, error: "Unauthorized" };
+
+  const role = session.user.role;
+  const isVerificator = ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "ADMIN"].includes(role);
+
+  if (!isVerificator) {
     return { success: false, error: "Unauthorized" };
   }
 
@@ -82,20 +87,9 @@ export async function verifyByLeader(requestId: string, approve: boolean): Promi
 
     if (!request) return { success: false, error: "Request not found" };
 
-    const reqDivision = (request as any).division;
-    const userDivision = (session.user as any).division;
-
-    console.log("DEBUG APPROVAL:", {
-      userRole: session.user.role,
-      userDivision: userDivision,
-      requestDivision: reqDivision
-    });
-
-    // SPV check division match (unless Admin/Owner)
-    if (session.user.role === "LEADER") {
-      if (!userDivision || userDivision !== reqDivision) {
-        return { success: false, error: `Anda tidak memiliki akses ke divisi ${reqDivision}. (Akun Anda: ${userDivision || 'Tanpa Divisi'})` };
-      }
+    // Check if user is the assigned verifier or Admin
+    if (role !== "ADMIN" && (request as any).accRole !== role) {
+      return { success: false, error: `Anda bukan verifikator untuk pengajuan ini. (Target: ${(request as any).accRole})` };
     }
 
     await prisma.kasbonRequest.update({
@@ -106,6 +100,7 @@ export async function verifyByLeader(requestId: string, approve: boolean): Promi
       },
     });
     revalidatePath("/approvals");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (err) {
     return { success: false, error: "Gagal memproses verifikasi." };
@@ -114,11 +109,21 @@ export async function verifyByLeader(requestId: string, approve: boolean): Promi
 
 export async function approveByOwner(requestId: string, approve: boolean): Promise<KasbonResponse> {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user.role !== "OWNER" && session.user.role !== "ADMIN")) {
-    return { success: false, error: "Unauthorized" };
+  
+  // Only Admin can perform final approval
+  if (!session || (session.user.role !== "ADMIN" && session.user.role !== "OWNER")) {
+    return { success: false, error: "Hanya Admin yang dapat memberikan persetujuan akhir." };
   }
 
   try {
+    const request = await prisma.kasbonRequest.findUnique({
+      where: { id: requestId }
+    });
+
+    if (!request || request.status !== "LEADER_VERIFIED") {
+      return { success: false, error: "Tahapan persetujuan tidak valid." };
+    }
+
     await prisma.kasbonRequest.update({
       where: { id: requestId },
       data: {
@@ -127,8 +132,9 @@ export async function approveByOwner(requestId: string, approve: boolean): Promi
       },
     });
     revalidatePath("/approvals");
+    revalidatePath("/dashboard");
     return { success: true };
   } catch (err) {
-    return { success: false, error: "Gagal memproses persetujuan." };
+    return { success: false, error: "Gagal memproses persetujuan akhir." };
   }
 }

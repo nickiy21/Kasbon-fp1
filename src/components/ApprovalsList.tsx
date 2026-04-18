@@ -44,16 +44,28 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-      {requests.map((req) => (
-        <div key={req.id} className={loading === req.id ? "opacity-50 pointer-events-none" : ""}>
-          <KasbonCard 
-            request={req} 
-            showActions={true}
-            onVerify={(session?.user as any)?.role === "LEADER" ? (id: string, approve: boolean) => handleAction(id, approve, 'leader') : undefined}
-            onApprove={(session?.user as any)?.role === "OWNER" || (session?.user as any)?.role === "ADMIN" ? (id: string, approve: boolean) => handleAction(id, approve, 'owner') : undefined}
-          />
-        </div>
-      ))}
+      {requests.map((req) => {
+        const userRole = (session?.user as any)?.role;
+        const isStep1 = req.status === "PENDING";
+        const isStep2 = req.status === "LEADER_VERIFIED";
+        
+        // Step 1: Assigned Verificator or Admin
+        const canVerify = isStep1 && (userRole === "ADMIN" || req.accRole === userRole);
+        // Step 2: Admin or Owner
+        const canApprove = isStep2 && (userRole === "ADMIN" || userRole === "OWNER");
+
+        return (
+          <div key={req.id} className={loading === req.id ? "opacity-50 pointer-events-none" : ""}>
+            <KasbonCard 
+              request={req} 
+              showActions={true}
+              onVerify={canVerify ? (id: string, approve: boolean) => handleAction(id, approve, 'leader') : undefined}
+              onApprove={canApprove ? (id: string, approve: boolean) => handleAction(id, approve, 'owner') : undefined}
+            />
+          </div>
+        );
+      })}
     </div>
   );
+
 }

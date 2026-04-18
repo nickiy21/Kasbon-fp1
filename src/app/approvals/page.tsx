@@ -14,15 +14,17 @@ export default async function ApprovalsPage() {
   const role = session.user.role;
   const requests = await prisma.kasbonRequest.findMany({
     where: { 
-      status: { in: ["PENDING", "LEADER_VERIFIED"] },
       OR: [
-        { accRole: role },
-        { id: role === "ADMIN" || role === "OWNER" ? { not: "" } : undefined }
+        // Step 1: Assigned Verificator or Admin sees PENDING
+        { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
+        // Step 2: Admin or Owner sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: role === "ADMIN" || role === "OWNER" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any,
     include: { employee: true },
     orderBy: { submissionDate: "asc" },
   });
+
 
 
   return (

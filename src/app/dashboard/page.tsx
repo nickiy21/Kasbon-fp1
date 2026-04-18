@@ -29,14 +29,16 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   // For Admin/Owner/Leaders, get pending count and items
-  const isApprover = ["ADMIN", "OWNER", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "LEADER"].includes(user.role);
+  const role = user.role;
+  const isApprover = ["ADMIN", "OWNER", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK"].includes(role);
   
   const pendingRequests = isApprover ? await prisma.kasbonRequest.findMany({
     where: { 
-      status: { in: ["PENDING", "LEADER_VERIFIED"] },
       OR: [
-        { accRole: user.role },
-        { id: user.role === "ADMIN" || user.role === "OWNER" ? { not: "" } : undefined }
+        // Step 1: Assigned Verificator or Admin sees PENDING
+        { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
+        // Step 2: Admin or Owner sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: role === "ADMIN" || role === "OWNER" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any,
     include: { employee: true },
@@ -46,13 +48,13 @@ export default async function DashboardPage() {
 
   const pendingCount = isApprover ? await prisma.kasbonRequest.count({
     where: { 
-      status: { in: ["PENDING", "LEADER_VERIFIED"] },
       OR: [
-        { accRole: user.role },
-        { id: user.role === "ADMIN" || user.role === "OWNER" ? { not: "" } : undefined }
+        { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
+        { status: "LEADER_VERIFIED", id: role === "ADMIN" || role === "OWNER" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any
   }) : 0;
+
 
 
   return (

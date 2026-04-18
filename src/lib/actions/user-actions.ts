@@ -29,9 +29,10 @@ export async function registerUser(formData: FormData) {
         username,
         password: hashedPassword,
         role: "EMPLOYEE",
-        division: "MEKANIK", // Default as per request implication "menu karyawan (mekanik)"
+        division: "MEKANIK", // Default starting division
       },
     });
+
 
     revalidatePath("/admin/members");
     return { success: true };
