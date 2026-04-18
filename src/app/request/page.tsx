@@ -23,9 +23,10 @@ export default async function RequestPage() {
         <ChevronLeft size={16} /> Kembali ke Dashboard
       </Link>
       <div className="mb-8 text-center">
-        <h1 className="text-4xl font-black italic tracking-tighter text-zinc-900 dark:text-white">
+        <h1 className="text-4xl font-black italic tracking-tighter text-zinc-900">
           AJUKAN <span className="text-red-600">KASBON</span>
         </h1>
+
         <p className="mt-2 text-zinc-500 uppercase tracking-widest text-[10px] font-bold">
           Step 1: Employee Submission
         </p>

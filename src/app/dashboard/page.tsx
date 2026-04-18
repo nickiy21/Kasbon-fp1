@@ -28,12 +28,16 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  // For Admin/Owner/Leader, get pending count and items
-  const isApprover = user.role !== "EMPLOYEE";
+  // For Admin/Owner/Leaders, get pending count and items
+  const isApprover = ["ADMIN", "OWNER", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "LEADER"].includes(user.role);
+  
   const pendingRequests = isApprover ? await prisma.kasbonRequest.findMany({
     where: { 
-      status: user.role === "LEADER" ? "PENDING" : "LEADER_VERIFIED",
-      division: user.role === "LEADER" ? ((user as any).division) : undefined
+      status: { in: ["PENDING", "LEADER_VERIFIED"] },
+      OR: [
+        { accRole: user.role },
+        { id: user.role === "ADMIN" || user.role === "OWNER" ? { not: "" } : undefined }
+      ]
     } as any,
     include: { employee: true },
     orderBy: { submissionDate: "asc" },
@@ -42,16 +46,20 @@ export default async function DashboardPage() {
 
   const pendingCount = isApprover ? await prisma.kasbonRequest.count({
     where: { 
-      status: user.role === "LEADER" ? "PENDING" : "LEADER_VERIFIED",
-      division: user.role === "LEADER" ? ((user as any).division) : undefined
+      status: { in: ["PENDING", "LEADER_VERIFIED"] },
+      OR: [
+        { accRole: user.role },
+        { id: user.role === "ADMIN" || user.role === "OWNER" ? { not: "" } : undefined }
+      ]
     } as any
   }) : 0;
+
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <header className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-black italic tracking-tighter text-zinc-900 dark:text-white uppercase flex items-center gap-3">
+          <h1 className="text-2xl font-black italic tracking-tighter text-zinc-900 uppercase flex items-center gap-3">
             {user.role === "EMPLOYEE" ? "Dashboard Karyawan" : "Dashboard Verifikator"}
             {(user as any).division && (
               <span className="bg-red-600 text-[10px] text-white px-2 py-0.5 rounded italic font-black">
@@ -91,7 +99,7 @@ export default async function DashboardPage() {
               <AlertCircle size={16} />
               <span className="text-[10px] font-bold uppercase tracking-widest">Menunggu Anda</span>
             </div>
-            <p className="mt-2 text-2xl font-black text-zinc-900 dark:text-white">
+            <p className="mt-2 text-2xl font-black text-zinc-900">
               {pendingCount} Pengajuan
             </p>
           </Link>
@@ -102,10 +110,11 @@ export default async function DashboardPage() {
             <LayoutDashboard size={16} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Personal Histori</span>
           </div>
-          <p className="mt-2 text-2xl font-black text-zinc-900 dark:text-white">
+          <p className="mt-2 text-2xl font-black text-zinc-900">
             {user.requests.length} Data
           </p>
         </div>
+
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -136,7 +145,7 @@ export default async function DashboardPage() {
                             <span className="text-[10px] font-black italic text-red-600 uppercase">
                               {req.employeeName || req.employee?.name}
                             </span>
-                            <p className="text-sm font-black text-zinc-900 dark:text-white uppercase">
+                            <p className="text-sm font-black text-zinc-900 uppercase">
                               Rp{req.amount.toLocaleString('id-ID')}
                             </p>
                             <p className="text-[10px] text-zinc-400 italic">
@@ -176,7 +185,7 @@ export default async function DashboardPage() {
                         <span className="text-[10px] font-black italic text-red-600">
                           Rp{req.amount.toLocaleString('id-ID')}
                         </span>
-                        <span className="text-xs font-semibold text-zinc-900 dark:text-white">
+                        <span className="text-xs font-semibold text-zinc-900">
                           {req.purpose}
                         </span>
                         <span className="text-[10px] text-zinc-400">
@@ -184,7 +193,7 @@ export default async function DashboardPage() {
                         </span>
                       </div>
                       <div className="flex gap-2">
-                         <span className="text-[10px] uppercase font-bold text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full border border-zinc-200 dark:border-zinc-700">
+                         <span className="text-[10px] uppercase font-bold text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full border border-zinc-200">
                             {req.status}
                          </span>
                       </div>
@@ -198,7 +207,7 @@ export default async function DashboardPage() {
 
         {/* SOP REMINDER / QUICK ACTIONS */}
         <div className="space-y-6">
-          <div className="fastprix-card bg-zinc-900 px-6 py-8 text-white dark:bg-zinc-950 border-t-8 border-red-600">
+          <div className="fastprix-card bg-zinc-900 px-6 py-8 text-white border-t-8 border-red-600">
             <h3 className="mb-6 text-xl font-black italic tracking-tighter text-red-500 uppercase">Pusat Informasi SOP</h3>
             <div className="space-y-6 text-[11px] leading-relaxed">
               <div className="pb-4 border-b border-zinc-800">

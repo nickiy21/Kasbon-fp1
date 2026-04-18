@@ -31,12 +31,12 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
   if (requests.length === 0) {
     return (
       <div className="fastprix-card flex flex-col items-center justify-center py-20 text-center">
-        <div className="mb-4 h-16 w-16 rounded-full bg-zinc-100 p-4 text-zinc-400 dark:bg-zinc-800">
+        <div className="mb-4 h-16 w-16 rounded-full bg-zinc-100 p-4 text-zinc-400">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Semua Selesai!</h3>
+        <h3 className="text-lg font-bold text-zinc-900">Semua Selesai!</h3>
         <p className="text-sm text-zinc-500">Tidak ada pengajuan kasbon yang menunggu persetujuan Anda.</p>
       </div>
     );

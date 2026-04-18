@@ -226,7 +226,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
   return (
     <div className="space-y-6">
       {/* FILTERS & ACTIONS */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end justify-between bg-white dark:bg-zinc-950 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end justify-between bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
           <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 flex items-center gap-2">
@@ -236,7 +236,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
               type="date" 
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full rounded-xl border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-bold focus:border-red-600 focus:ring-red-600 dark:border-zinc-800 dark:bg-zinc-900"
+              className="w-full rounded-xl border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-bold focus:border-red-600 focus:ring-red-600"
             />
           </div>
           <div className="space-y-2">
@@ -247,7 +247,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
               type="date" 
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full rounded-xl border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-bold focus:border-red-600 focus:ring-red-600 dark:border-zinc-800 dark:bg-zinc-900"
+              className="w-full rounded-xl border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-bold focus:border-red-600 focus:ring-red-600"
             />
           </div>
           <div className="space-y-2">
@@ -259,7 +259,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
               placeholder="Ketik untuk mencari..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-bold focus:border-red-600 focus:ring-red-600 dark:border-zinc-800 dark:bg-zinc-900"
+              className="w-full rounded-xl border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-bold focus:border-red-600 focus:ring-red-600"
             />
           </div>
         </div>
@@ -288,11 +288,11 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
       </div>
 
       {/* TABLE */}
-      <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 shadow-xl">
+      <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50">
+              <tr className="border-b border-zinc-200 bg-zinc-50">
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Tgl Pengajuan</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Karyawan</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Divisi</th>
@@ -310,20 +310,20 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                 </tr>
               ) : (
                 filteredRequests.map((req) => (
-                  <tr key={req.id} className="border-b border-zinc-100 hover:bg-zinc-50/50 dark:border-zinc-900 dark:hover:bg-zinc-900/20 transition-colors">
+                  <tr key={req.id} className="border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                     <td className="p-4">
-                      <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400">
+                      <span className="text-xs font-bold text-zinc-600">
                         {format(new Date(req.submissionDate), "dd MMM yyyy", { locale: id })}
                       </span>
                     </td>
                     <td className="p-4">
-                      <p className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-tighter">
+                      <p className="text-sm font-black text-zinc-900 uppercase tracking-tighter">
                         {req.employeeName || req.employee?.name}
                       </p>
                       <p className="text-[10px] text-zinc-400 italic font-medium">"{req.purpose}"</p>
                     </td>
                     <td className="p-4">
-                      <span className="inline-block rounded bg-zinc-100 px-2 py-0.5 text-[9px] font-black text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                      <span className="inline-block rounded bg-zinc-100 px-2 py-0.5 text-[9px] font-black text-zinc-600">
                         {req.division}
                       </span>
                     </td>
@@ -348,7 +348,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
         </div>
         
         {/* FOOTER SUMMARY */}
-        <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+        <div className="bg-zinc-50 p-4 border-t border-zinc-200 flex justify-between items-center">
           <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
             Menampilkan {filteredRequests.length} dari {initialRequests.length} data
           </p>

@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 dark:bg-black`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}
       >
         <Providers>
           <div className="flex min-h-screen flex-col">
@@ -35,7 +35,7 @@ export default function RootLayout({
             <main className="flex-1">
               {children}
             </main>
-            <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-500 dark:border-zinc-800">
+            <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-500">
               &copy; {new Date().getFullYear()} FastPrix1 Group. All rights reserved.
             </footer>
           </div>

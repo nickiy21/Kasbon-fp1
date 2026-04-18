@@ -169,30 +169,62 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   type="text"
                   name="employeeName"
                   required
-                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
                   placeholder="Input nama lengkap sesuai KTP"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Divisi
                 </label>
                 <select
                   name="division"
                   required
-                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white h-[46px]"
+                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 h-[46px]"
                 >
-                  <option value="DOORSMER" className="text-zinc-900 bg-white">DOORSMER</option>
-                  <option value="MARKETING" className="text-zinc-900 bg-white">MARKETING</option>
-                  <option value="MEKANIK" className="text-zinc-900 bg-white">MEKANIK</option>
+                  <option value="CUCI">CUCI</option>
+                  <option value="LAP">LAP</option>
+                  <option value="KASIR">KASIR</option>
+                  <option value="QC_CUCI">QC CUCI</option>
+                  <option value="QC_LAP">QC LAP</option>
+                  <option value="MESIN">MESIN</option>
+                  <option value="SPBL">SPBL</option>
+                  <option value="AC">AC</option>
+                  <option value="DETAILING">DETAILING</option>
+                  <option value="FINANCE">FINANCE</option>
+                  <option value="ACCOUNTING">ACCOUNTING</option>
+                  <option value="LOGISTIC">LOGISTIC</option>
+                  <option value="SECURITY">SECURITY</option>
+                  <option value="OB">OB</option>
+                  <option value="MAINTENANCE">MAINTENANCE</option>
+                  <option value="HC">HC</option>
+                  <option value="EXPEDISI">EXPEDISI</option>
+                  <option value="OTHERS">OTHERS</option>
                 </select>
               </div>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                  Pilih Role ACC Kasbon
+                </label>
+                <select
+                  name="accRole"
+                  required
+                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 h-[46px]"
+                >
+                  <option value="HC">HC</option>
+                  <option value="FINANCE">FINANCE</option>
+                  <option value="DOORSMER">DOORSMER</option>
+                  <option value="MEKANIK">MEKANIK</option>
+                  <option value="MARKETING">MARKETING</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Tanggal Masuk Kerja
                 </label>
                 <input
@@ -201,7 +233,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   value={joinDate}
                   onChange={(e) => setJoinDate(e.target.value)}
                   required
-                  className={`block w-full rounded-xl border-2 py-3 px-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${joinDate && tenureInMonths < 2 ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-white`}
+                  className={`block w-full rounded-xl border-2 py-3 px-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${joinDate && tenureInMonths < 2 ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white`}
                 />
                 {joinDate && tenureInMonths < 2 && (
                   <p className="mt-1 text-[10px] font-black text-red-600 animate-pulse uppercase">* Harus bekerja minimal 2 bulan</p>
@@ -217,13 +249,13 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
             </h3>
             
             <div className="grid gap-6 sm:grid-cols-2">
-              <div className="rounded-2xl border-2 border-zinc-100 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
+              <div className="rounded-2xl border-2 border-zinc-100 bg-zinc-50 p-4">
                 <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
                    Sedang dalam masa SP?
                 </label>
                 <div className="flex gap-4">
                   {["TIDAK", "YA"].map((val) => (
-                    <label key={val} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-zinc-200 bg-white py-3 text-zinc-900 transition-all hover:bg-red-50 cursor-pointer has-[:checked]:border-red-600 has-[:checked]:bg-red-600 has-[:checked]:text-white dark:border-zinc-700 dark:bg-zinc-950">
+                    <label key={val} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-zinc-200 bg-white py-3 text-zinc-900 transition-all hover:bg-red-50 cursor-pointer has-[:checked]:border-red-600 has-[:checked]:bg-red-600 has-[:checked]:text-white">
                       <input 
                         type="radio" 
                         name="spStatus" 
@@ -239,13 +271,13 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                 </div>
               </div>
 
-              <div className="rounded-2xl border-2 border-zinc-100 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
+              <div className="rounded-2xl border-2 border-zinc-100 bg-zinc-50 p-4">
                 <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
                   Saldo Kasbon Sebelumnya Lunas?
                 </label>
                 <div className="flex gap-4">
                   {["YA", "TIDAK"].map((val) => (
-                    <label key={val} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-zinc-200 bg-white py-3 text-zinc-900 transition-all hover:bg-emerald-50 cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-600 has-[:checked]:text-white dark:border-zinc-700 dark:bg-zinc-950">
+                    <label key={val} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-zinc-200 bg-white py-3 text-zinc-900 transition-all hover:bg-emerald-50 cursor-pointer has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-600 has-[:checked]:text-white">
                       <input 
                         type="radio" 
                         name="isPreviousPaid" 
@@ -274,7 +306,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   value={spDescription}
                   onChange={(e) => setSpDescription(e.target.value)}
                   rows={3}
-                  className="block w-full rounded-2xl border-2 border-red-600/30 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                  className="block w-full rounded-2xl border-2 border-red-600/30 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
                   placeholder="Berikan alasan atau penjelasan mengenai status SP Anda saat ini agar dapat dipertimbangkan oleh SPV/Admin..."
                 />
               </div>
@@ -310,7 +342,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                     required
                     value={formatNumber(requestAmount)}
                     onChange={(e) => setRequestAmount(parseNumber(e.target.value))}
-                    className={`block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white`}
+                    className={`block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10`}
                     placeholder="Contoh: 500.000"
                   />
                 </div>
@@ -322,7 +354,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                 </label>
                 <select
                   name="repaymentMonths"
-                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white h-[46px]"
+                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 h-[46px]"
                 >
                   <option value="1">1 BULAN (POTONG GAJI BERIKUTNYA)</option>
                   <option value="2">2 BULAN</option>
@@ -339,7 +371,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                 name="purpose"
                 required
                 rows={4}
-                className="block w-full rounded-2xl border-2 border-zinc-200 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                className="block w-full rounded-2xl border-2 border-zinc-200 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
                 placeholder="Jelaskan kebutuhan Anda secara detail agar mempermudah evaluasi SPV..."
               />
             </div>

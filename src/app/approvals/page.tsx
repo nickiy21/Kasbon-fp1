@@ -12,32 +12,23 @@ export default async function ApprovalsPage() {
   }
 
   const role = session.user.role;
-  const userDivision = (session.user as any).division;
-  let requests: any[] = [];
+  const requests = await prisma.kasbonRequest.findMany({
+    where: { 
+      status: { in: ["PENDING", "LEADER_VERIFIED"] },
+      OR: [
+        { accRole: role },
+        { id: role === "ADMIN" || role === "OWNER" ? { not: "" } : undefined }
+      ]
+    } as any,
+    include: { employee: true },
+    orderBy: { submissionDate: "asc" },
+  });
 
-  if (role === "LEADER") {
-    // Leader sees PENDING requests for their division
-    requests = await prisma.kasbonRequest.findMany({
-      where: { 
-        status: "PENDING",
-        division: userDivision
-      } as any,
-      include: { employee: true },
-      orderBy: { submissionDate: "asc" },
-    });
-  } else if (role === "OWNER" || role === "ADMIN") {
-    // Owner sees LEADER_VERIFIED requests
-    requests = await prisma.kasbonRequest.findMany({
-      where: { status: "LEADER_VERIFIED" },
-      include: { employee: true },
-      orderBy: { submissionDate: "asc" },
-    });
-  }
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-12">
       <div className="mb-12 text-center">
-        <h1 className="text-4xl font-black italic tracking-tighter text-zinc-900 dark:text-white">
+        <h1 className="text-4xl font-black italic tracking-tighter text-zinc-900">
           ANTREAN <span className="text-red-600">PERSETUJUAN</span>
         </h1>
         <p className="mt-2 text-zinc-500 uppercase tracking-widest text-[10px] font-bold">
