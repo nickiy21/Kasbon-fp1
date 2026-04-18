@@ -17,15 +17,6 @@ export default async function RequestPage() {
     where: { userId: session.user.id },
   });
 
-  if (!profile) {
-    return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
-        <h1 className="text-2xl font-bold text-red-600">Profil Tidak Ditemukan</h1>
-        <p className="mt-2 text-zinc-500">Anda harus terdaftar sebagai karyawan untuk mengakses halaman ini.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <Link href="/dashboard" className="mb-6 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-zinc-400 hover:text-red-600 transition-colors">
@@ -40,7 +31,7 @@ export default async function RequestPage() {
         </p>
       </div>
 
-      <KasbonForm basicSalary={profile.basicSalary} />
+      <KasbonForm basicSalary={profile?.basicSalary || 0} />
     </div>
   );
 }
