@@ -35,9 +35,13 @@ export async function registerUser(formData: FormData) {
 
     revalidatePath("/admin/members");
     return { success: true };
-  } catch (error) {
-    console.error("Registration error:", error);
-    return { success: false, error: "Failed to create account" };
+  } catch (error: any) {
+    console.error("Registration error details:", error);
+    // Provide a slightly more helpful error if it's a known prisma error
+    if (error.code === 'P2002') {
+      return { success: false, error: "Username sudah terdaftar" };
+    }
+    return { success: false, error: `Gagal membuat akun: ${error.message || "Unknown error"}` };
   }
 }
 
