@@ -75,10 +75,6 @@ export function KasbonCard({ request, showActions = false, onVerify, onApprove }
       {/* DETAIL INFO GRID */}
       <div className="mt-4 grid grid-cols-2 gap-y-4 gap-x-2 text-[10px] border-b border-zinc-100 pb-4 dark:border-zinc-800">
         <div>
-          <span className="font-bold text-zinc-400 uppercase tracking-tighter">Gaji Pokok:</span>
-          <p className="font-black text-zinc-900 dark:text-zinc-200">Rp{request.basicSalary?.toLocaleString('id-ID') || "0"}</p>
-        </div>
-        <div>
           <span className="font-bold text-zinc-400 uppercase tracking-tighter">Masuk Kerja:</span>
           <p className="font-black text-zinc-900 dark:text-zinc-200">{request.joinDate ? format(new Date(request.joinDate), "dd/MM/yyyy") : "N/A"}</p>
         </div>
@@ -96,13 +92,26 @@ export function KasbonCard({ request, showActions = false, onVerify, onApprove }
         </div>
       </div>
 
-      <div className="mt-4">
-        <span className="text-[9px] uppercase font-black tracking-widest text-zinc-400 flex items-center gap-1">
-           Tujuan Penggunaan
-        </span>
-        <p className="mt-1 text-xs font-medium leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-3 italic">
-          "{request.purpose}"
-        </p>
+      <div className="mt-4 space-y-4">
+        <div>
+          <span className="text-[9px] uppercase font-black tracking-widest text-zinc-400 flex items-center gap-1">
+             Tujuan Penggunaan
+          </span>
+          <p className="mt-1 text-xs font-medium leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-3 italic">
+            "{request.purpose}"
+          </p>
+        </div>
+
+        {request.spStatus && request.spDescription && (
+          <div className="rounded-xl bg-red-50 p-3 border border-red-100 dark:bg-red-900/10 dark:border-red-900/30">
+            <span className="text-[9px] uppercase font-black tracking-widest text-red-600 flex items-center gap-1">
+               Penjelasan Masa SP
+            </span>
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-zinc-800 dark:text-zinc-300">
+              {request.spDescription}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 flex items-center justify-between text-[9px] font-black text-zinc-400 uppercase tracking-widest">
