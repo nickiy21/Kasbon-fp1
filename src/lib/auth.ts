@@ -78,5 +78,9 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt" as const,
   },
-  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback-secret-for-dev-only",
 };
+
+if (!process.env.NEXTAUTH_SECRET && !process.env.AUTH_SECRET && process.env.NODE_ENV === 'production') {
+  console.warn("[WARNING] NextAuth Secret is missing in production environment variables!");
+}
