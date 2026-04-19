@@ -121,10 +121,43 @@ export function KasbonCard({ request, showActions = false, onVerify, onFinance, 
           </div>
         )}
 
-        {request.notes && (
+        {request.spvNotes && (
           <div className="rounded-xl bg-blue-50 p-3 border border-blue-100">
             <span className="text-[9px] uppercase font-black tracking-widest text-blue-600 flex items-center gap-1">
-               Catatan Verifikator/Admin
+               Catatan SPV Divisi
+            </span>
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-zinc-800">
+              {request.spvNotes}
+            </p>
+          </div>
+        )}
+
+        {request.financeNotes && (
+          <div className="rounded-xl bg-purple-50 p-3 border border-purple-100">
+            <span className="text-[9px] uppercase font-black tracking-widest text-purple-600 flex items-center gap-1">
+               Catatan Finance
+            </span>
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-zinc-800">
+              {request.financeNotes}
+            </p>
+          </div>
+        )}
+
+        {request.adminNotes && (
+          <div className="rounded-xl bg-emerald-50 p-3 border border-emerald-100">
+            <span className="text-[9px] uppercase font-black tracking-widest text-emerald-600 flex items-center gap-1">
+               Catatan Admin
+            </span>
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-zinc-800">
+              {request.adminNotes}
+            </p>
+          </div>
+        )}
+
+        {request.notes && !request.spvNotes && !request.financeNotes && !request.adminNotes && (
+          <div className="rounded-xl bg-zinc-50 p-3 border border-zinc-100">
+            <span className="text-[9px] uppercase font-black tracking-widest text-zinc-400 flex items-center gap-1">
+               Catatan Verifikator
             </span>
             <p className="mt-1 text-[11px] font-bold leading-relaxed text-zinc-800">
               {request.notes}

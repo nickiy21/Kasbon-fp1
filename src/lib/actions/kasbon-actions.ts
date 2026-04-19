@@ -97,7 +97,10 @@ export async function verifyByLeader(requestId: string, approve: boolean, notes?
       data: {
         status: approve ? "LEADER_VERIFIED" : "REJECTED",
         leaderId: session.user.id,
-        notes: notes || null,
+        spvNotes: notes || null,
+        // Also sync to general notes for backward compatibility if needed, 
+        // but we'll use specific fields in UI
+        notes: notes || null, 
       } as any,
     });
     revalidatePath("/approvals");
@@ -131,6 +134,7 @@ export async function verifyByFinance(requestId: string, approve: boolean, notes
       where: { id: requestId },
       data: {
         status: (approve ? "FINANCE_VERIFIED" : "REJECTED") as any,
+        financeNotes: notes || null,
         notes: notes || null,
       } as any,
     });
@@ -164,6 +168,7 @@ export async function approveByOwner(requestId: string, approve: boolean, notes?
       data: {
         status: approve ? "APPROVED" : "REJECTED",
         ownerId: session.user.id,
+        adminNotes: notes || null,
         notes: notes || null,
       } as any,
     });

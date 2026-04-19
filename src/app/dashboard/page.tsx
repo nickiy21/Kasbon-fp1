@@ -37,8 +37,8 @@ export default async function DashboardPage() {
       OR: [
         // Step 1: Assigned Verificator or Admin sees PENDING
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        // Step 2: Finance or Admin sees LEADER_VERIFIED
-        { status: "LEADER_VERIFIED", id: ((role as string) === "ADMIN" || (role as string) === "FINANCE") ? { not: "" } : { equals: "__non_existent__" } },
+        // Step 2: ONLY Finance sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: (role as string) === "FINANCE" ? { not: "" } : { equals: "__non_existent__" } },
         // Step 3: Admin sees FINANCE_VERIFIED
         { status: "FINANCE_VERIFIED", id: (role as string) === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
@@ -52,7 +52,7 @@ export default async function DashboardPage() {
     where: { 
       OR: [
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        { status: "LEADER_VERIFIED", id: ((role as string) === "ADMIN" || (role as string) === "FINANCE") ? { not: "" } : { equals: "__non_existent__" } },
+        { status: "LEADER_VERIFIED", id: (role as string) === "FINANCE" ? { not: "" } : { equals: "__non_existent__" } },
         { status: "FINANCE_VERIFIED", id: (role as string) === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any
@@ -203,9 +203,30 @@ export default async function DashboardPage() {
                         </div>
                       </div>
                       
-                      {req.notes && (
+                      {req.spvNotes && (
                         <div className="bg-blue-50 p-3 rounded-xl border border-blue-100">
-                          <p className="text-[9px] font-black uppercase text-blue-600 tracking-widest mb-1">Catatan Verifikator:</p>
+                          <p className="text-[9px] font-black uppercase text-blue-600 tracking-widest mb-1">Catatan SPV Divisi:</p>
+                          <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.spvNotes}</p>
+                        </div>
+                      )}
+                      
+                      {req.financeNotes && (
+                        <div className="bg-purple-50 p-3 rounded-xl border border-purple-100">
+                          <p className="text-[9px] font-black uppercase text-purple-600 tracking-widest mb-1">Catatan Finance:</p>
+                          <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.financeNotes}</p>
+                        </div>
+                      )}
+                      
+                      {req.adminNotes && (
+                        <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+                          <p className="text-[9px] font-black uppercase text-emerald-600 tracking-widest mb-1">Catatan Admin:</p>
+                          <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.adminNotes}</p>
+                        </div>
+                      )}
+                      
+                      {req.notes && !req.spvNotes && !req.financeNotes && !req.adminNotes && (
+                        <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                          <p className="text-[9px] font-black uppercase text-zinc-400 tracking-widest mb-1">Catatan Verifikator:</p>
                           <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.notes}</p>
                         </div>
                       )}

@@ -118,5 +118,10 @@ model KasbonRequest {
   rejectionReason     String?
   spDescription       String?
   notes               String?
+  
+  // Response notes for each stage
+  spvNotes            String?
+  financeNotes        String?
+  adminNotes          String?
 }
 
