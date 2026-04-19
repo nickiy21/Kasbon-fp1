@@ -19,9 +19,9 @@ export default function StatusBadge({ status }: { status: string }) {
   }[status] || "bg-zinc-50 text-zinc-600";
 
   const labels = {
-    PENDING: "Menunggu Leader",
-    LEADER_VERIFIED: "Terverifikasi Leader",
-    APPROVED: "Disetujui Owner",
+    PENDING: "Menunggu Verifikasi",
+    LEADER_VERIFIED: "Terverifikasi Verifikator",
+    APPROVED: "Disetujui Admin",
     REJECTED: "Ditolak",
     PAID: "Lunas",
   }[status] || status;

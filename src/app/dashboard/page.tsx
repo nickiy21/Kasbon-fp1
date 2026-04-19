@@ -30,15 +30,15 @@ export default async function DashboardPage() {
 
   // For Admin/Owner/Leaders, get pending count and items
   const role = user.role;
-  const isApprover = ["ADMIN", "OWNER", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK"].includes(role);
+  const isApprover = ["ADMIN", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK"].includes(role);
   
   const pendingRequests = isApprover ? await prisma.kasbonRequest.findMany({
     where: { 
       OR: [
         // Step 1: Assigned Verificator or Admin sees PENDING
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        // Step 2: Admin or Owner sees LEADER_VERIFIED
-        { status: "LEADER_VERIFIED", id: role === "ADMIN" || role === "OWNER" ? { not: "" } : { equals: "__non_existent__" } }
+        // Step 2: Admin sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: role === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any,
     include: { employee: true },
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
     where: { 
       OR: [
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        { status: "LEADER_VERIFIED", id: role === "ADMIN" || role === "OWNER" ? { not: "" } : { equals: "__non_existent__" } }
+        { status: "LEADER_VERIFIED", id: role === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any
   }) : 0;
@@ -242,8 +242,8 @@ export default async function DashboardPage() {
                 <p className="font-black text-white uppercase tracking-widest mb-2">4. PROSEDUR (BIROKRASI)</p>
                 <ol className="space-y-2 text-zinc-400 list-decimal pl-4">
                   <li>Isi Formulir Kasbon online/admin.</li>
-                  <li>Verifikasi Leader (Kepala Regu).</li>
-                  <li>Persetujuan Akhir Owner/Manager.</li>
+                  <li>Verifikasi Verifikator (HC/Finance/SPV).</li>
+                  <li>Persetujuan Akhir Admin.</li>
                   <li>Pencairan Dana (Tunai/Transfer).</li>
                 </ol>
               </div>

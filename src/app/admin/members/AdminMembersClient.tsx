@@ -33,7 +33,7 @@ export default function AdminMembersClient({ initialUsers }: { initialUsers: any
     setLoading(null);
   };
 
-  const roles = ["EMPLOYEE", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "LEADER", "ADMIN", "OWNER"];
+  const roles = ["EMPLOYEE", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "ADMIN"];
 
   return (
     <div className="space-y-4">

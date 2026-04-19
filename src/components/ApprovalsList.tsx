@@ -52,7 +52,7 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
         // Step 1: Assigned Verificator or Admin
         const canVerify = isStep1 && (userRole === "ADMIN" || req.accRole === userRole);
         // Step 2: Admin or Owner
-        const canApprove = isStep2 && (userRole === "ADMIN" || userRole === "OWNER");
+        const canApprove = isStep2 && userRole === "ADMIN";
 
         return (
           <div key={req.id} className={loading === req.id ? "opacity-50 pointer-events-none" : ""}>

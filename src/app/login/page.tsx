@@ -165,23 +165,6 @@ function LoginForm() {
           </div>
         </form>
 
-        {!isRegistering && (
-           <div className="mt-8 rounded-2xl bg-zinc-50 p-6 border border-zinc-100">
-           <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-red-600 mb-4">
-             Akun Demo System v2.0
-           </h2>
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[10px] text-zinc-600">
-             <div className="space-y-1">
-               <p><span className="font-black text-zinc-900 uppercase">Admin:</span> admin</p>
-               <p><span className="font-black text-zinc-900 uppercase">Employee:</span> mekanik</p>
-             </div>
-             <div className="space-y-1">
-               <p><span className="font-black text-red-600 uppercase">Pimpinan:</span> spv_doorsmer</p>
-               <p><span className="font-black text-red-600 uppercase">Finance/HC:</span> (Coming Soon)</p>
-             </div>
-           </div>
-         </div>
-        )}
       </div>
     </div>
   );

@@ -12,9 +12,7 @@ datasource db {
 
 enum Role {
   EMPLOYEE
-  LEADER
   ADMIN
-  OWNER
   HC
   FINANCE
   DOORSMER
@@ -101,7 +99,7 @@ model KasbonRequest {
   basicSalary         Float?
   
   // Target role for approval
-  accRole             Role?        @default(LEADER)
+  accRole             Role?        @default(HC)
   
   // Employee who requested
   employeeId          String

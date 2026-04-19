@@ -17,8 +17,8 @@ export default async function ApprovalsPage() {
       OR: [
         // Step 1: Assigned Verificator or Admin sees PENDING
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        // Step 2: Admin or Owner sees LEADER_VERIFIED
-        { status: "LEADER_VERIFIED", id: role === "ADMIN" || role === "OWNER" ? { not: "" } : { equals: "__non_existent__" } }
+        // Step 2: Admin sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: role === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any,
     include: { employee: true },
@@ -34,7 +34,7 @@ export default async function ApprovalsPage() {
           ANTREAN <span className="text-red-600">PERSETUJUAN</span>
         </h1>
         <p className="mt-2 text-zinc-500 uppercase tracking-widest text-[10px] font-bold">
-          {role === "LEADER" ? "Step 2: Leader Verification" : "Step 3: Owner Approval"}
+          {role === "ADMIN" ? "Persetujuan Akhir Admin" : "Verifikasi Verifikator Departemen"}
         </p>
       </div>
 
@@ -44,12 +44,12 @@ export default async function ApprovalsPage() {
         <h3 className="text-sm font-bold uppercase tracking-widest text-red-500">Panduan Verifikator</h3>
         <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase">Tanggung Jawab Leader</span>
-            <p className="mt-2 text-xs text-zinc-400">Memastikan alasan kasbon valid (Mendesak) dan kinerja karyawan baik.</p>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase">Tanggung Jawab Verifikator</span>
+            <p className="mt-2 text-xs text-zinc-400">Memastikan alasan kasbon valid (Mendesak) dan kinerja karyawan baik di divisinya.</p>
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase">Tanggung Jawab Owner</span>
-            <p className="mt-2 text-xs text-zinc-400">Memberikan persetujuan akhir berdasarkan verifikasi Leader dan kondisi keuangan workshop.</p>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase">Tanggung Jawab Admin</span>
+            <p className="mt-2 text-xs text-zinc-400">Memberikan persetujuan akhir berdasarkan verifikasi departemen dan kondisi keuangan workshop.</p>
           </div>
           <div className="flex flex-col justify-end italic text-zinc-500 text-[10px]">
             Sistem Kasbon FastPrix1 v1.0.0

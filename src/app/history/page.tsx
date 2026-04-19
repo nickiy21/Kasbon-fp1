@@ -18,7 +18,7 @@ export default async function HistoryPage() {
     where: { 
       OR: [
         { accRole: role },
-        { id: role === "ADMIN" || role === "OWNER" ? { not: "" } : undefined }
+        { id: role === "ADMIN" ? { not: "" } : undefined }
       ],
       status: { not: "PENDING" }
     } as any,

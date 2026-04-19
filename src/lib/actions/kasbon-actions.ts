@@ -111,7 +111,7 @@ export async function approveByOwner(requestId: string, approve: boolean): Promi
   const session = await getServerSession(authOptions);
   
   // Only Admin can perform final approval
-  if (!session || (session.user.role !== "ADMIN" && session.user.role !== "OWNER")) {
+  if (!session || session.user.role !== "ADMIN") {
     return { success: false, error: "Hanya Admin yang dapat memberikan persetujuan akhir." };
   }
 

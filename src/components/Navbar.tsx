@@ -36,7 +36,7 @@ export default function Navbar() {
                   Ajukan Kasbon
                 </Link>
               )}
-              {session.user && ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "LEADER", "ADMIN", "OWNER"].includes((session.user as any).role) && (
+              {session.user && ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "ADMIN"].includes((session.user as any).role) && (
                 <Link
                   href="/approvals"
                   className="text-sm font-medium text-zinc-600 hover:text-red-600"
@@ -44,7 +44,7 @@ export default function Navbar() {
                   Persetujuan
                 </Link>
               )}
-              {session.user && ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "LEADER", "ADMIN", "OWNER"].includes((session.user as any).role) && (
+              {session.user && ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "ADMIN"].includes((session.user as any).role) && (
                 <Link
                   href="/history"
                   className="text-sm font-medium text-zinc-600 hover:text-red-600"
