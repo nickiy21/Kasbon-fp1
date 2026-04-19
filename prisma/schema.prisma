@@ -47,6 +47,7 @@ enum Division {
 enum KasbonStatus {
   PENDING
   LEADER_VERIFIED
+  FINANCE_VERIFIED
   APPROVED
   REJECTED
   DISBURSED

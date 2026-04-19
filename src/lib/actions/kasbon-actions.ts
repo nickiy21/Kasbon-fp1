@@ -98,13 +98,47 @@ export async function verifyByLeader(requestId: string, approve: boolean, notes?
         status: approve ? "LEADER_VERIFIED" : "REJECTED",
         leaderId: session.user.id,
         notes: notes || null,
-      },
+      } as any,
     });
     revalidatePath("/approvals");
     revalidatePath("/dashboard");
     return { success: true };
   } catch (err) {
     return { success: false, error: "Gagal memproses verifikasi." };
+  }
+}
+
+export async function verifyByFinance(requestId: string, approve: boolean, notes?: string): Promise<KasbonResponse> {
+  const session = await getServerSession(authOptions);
+  if (!session) return { success: false, error: "Unauthorized" };
+
+  const role = session.user.role;
+  // Finance or Admin can do this
+  if (role !== "FINANCE" && role !== "ADMIN") {
+    return { success: false, error: "Hanya SPV Finance atau Admin yang dapat melakukan konfirmasi ini." };
+  }
+
+  try {
+    const request = await prisma.kasbonRequest.findUnique({
+      where: { id: requestId }
+    });
+
+    if (!request || (request.status as string) !== "LEADER_VERIFIED") {
+      return { success: false, error: "Pengajuan belum diverifikasi oleh SPV Divisi." };
+    }
+
+    await prisma.kasbonRequest.update({
+      where: { id: requestId },
+      data: {
+        status: (approve ? "FINANCE_VERIFIED" : "REJECTED") as any,
+        notes: notes || null,
+      } as any,
+    });
+    revalidatePath("/approvals");
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: "Gagal memproses verifikasi finance." };
   }
 }
 
@@ -121,8 +155,8 @@ export async function approveByOwner(requestId: string, approve: boolean, notes?
       where: { id: requestId }
     });
 
-    if (!request || request.status !== "LEADER_VERIFIED") {
-      return { success: false, error: "Tahapan persetujuan tidak valid." };
+    if (!request || (request.status as string) !== "FINANCE_VERIFIED") {
+      return { success: false, error: "Tahapan persetujuan tidak valid (Menunggu konfirmasi Finance)." };
     }
 
     await prisma.kasbonRequest.update({
@@ -131,7 +165,7 @@ export async function approveByOwner(requestId: string, approve: boolean, notes?
         status: approve ? "APPROVED" : "REJECTED",
         ownerId: session.user.id,
         notes: notes || null,
-      },
+      } as any,
     });
     revalidatePath("/approvals");
     revalidatePath("/dashboard");

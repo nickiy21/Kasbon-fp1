@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { verifyByLeader, approveByOwner, KasbonResponse } from "@/lib/actions/kasbon-actions";
+import { verifyByLeader, verifyByFinance, approveByOwner, KasbonResponse } from "@/lib/actions/kasbon-actions";
 import { KasbonCard } from "./DashboardClient";
 import { useSession } from "next-auth/react";
 
@@ -10,12 +10,14 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
   const [requests, setRequests] = useState(initialRequests);
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleAction = async (id: string, approve: boolean, type: 'leader' | 'owner', note?: string) => {
+  const handleAction = async (id: string, approve: boolean, type: 'leader' | 'finance' | 'owner', note?: string) => {
     setLoading(id);
     let res: KasbonResponse;
 
     if (type === 'leader') {
       res = await verifyByLeader(id, approve, note);
+    } else if (type === 'finance') {
+      res = await verifyByFinance(id, approve, note);
     } else {
       res = await approveByOwner(id, approve, note);
     }
@@ -48,11 +50,14 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
         const userRole = (session?.user as any)?.role;
         const isStep1 = req.status === "PENDING";
         const isStep2 = req.status === "LEADER_VERIFIED";
+        const isStep3 = req.status === "FINANCE_VERIFIED";
         
         // Step 1: Assigned Verificator or Admin
         const canVerify = isStep1 && (userRole === "ADMIN" || req.accRole === userRole);
-        // Step 2: Admin or Owner
-        const canApprove = isStep2 && userRole === "ADMIN";
+        // Step 2: Finance or Admin
+        const canFinance = isStep2 && (userRole === "ADMIN" || userRole === "FINANCE");
+        // Step 3: Admin Final
+        const canApprove = isStep3 && userRole === "ADMIN";
 
         return (
           <div key={req.id} className={loading === req.id ? "opacity-50 pointer-events-none" : ""}>
@@ -60,6 +65,7 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
               request={req} 
               showActions={true}
               onVerify={canVerify ? (id: string, approve: boolean, note?: string) => handleAction(id, approve, 'leader', note) : undefined}
+              onFinance={canFinance ? (id: string, approve: boolean, note?: string) => handleAction(id, approve, 'finance', note) : undefined}
               onApprove={canApprove ? (id: string, approve: boolean, note?: string) => handleAction(id, approve, 'owner', note) : undefined}
             />
           </div>

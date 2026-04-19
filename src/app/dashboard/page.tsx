@@ -30,15 +30,17 @@ export default async function DashboardPage() {
 
   // For Admin/Owner/Leaders, get pending count and items
   const role = user.role;
-  const isApprover = ["ADMIN", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK"].includes(role);
+  const isApprover = ["ADMIN", "HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK"].includes(role as string);
   
   const pendingRequests = isApprover ? await prisma.kasbonRequest.findMany({
     where: { 
       OR: [
         // Step 1: Assigned Verificator or Admin sees PENDING
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        // Step 2: Admin sees LEADER_VERIFIED
-        { status: "LEADER_VERIFIED", id: role === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
+        // Step 2: Finance or Admin sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: ((role as string) === "ADMIN" || (role as string) === "FINANCE") ? { not: "" } : { equals: "__non_existent__" } },
+        // Step 3: Admin sees FINANCE_VERIFIED
+        { status: "FINANCE_VERIFIED", id: (role as string) === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any,
     include: { employee: true },
@@ -50,7 +52,8 @@ export default async function DashboardPage() {
     where: { 
       OR: [
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        { status: "LEADER_VERIFIED", id: role === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
+        { status: "LEADER_VERIFIED", id: ((role as string) === "ADMIN" || (role as string) === "FINANCE") ? { not: "" } : { equals: "__non_existent__" } },
+        { status: "FINANCE_VERIFIED", id: (role as string) === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any
   }) : 0;
@@ -182,23 +185,30 @@ export default async function DashboardPage() {
                   </div>
                 ) : (
                   user.requests.map((req: any) => (
-                    <div key={req.id} className="fastprix-card flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-black italic text-red-600">
-                          Rp{req.amount.toLocaleString('id-ID')}
-                        </span>
-                        <span className="text-xs font-semibold text-zinc-900">
-                          {req.purpose}
-                        </span>
-                        <span className="text-[10px] text-zinc-400">
-                          {format(new Date(req.submissionDate), "dd/MM/yyyy")}
-                        </span>
+                    <div key={req.id} className="fastprix-card flex flex-col gap-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-black italic text-red-600">
+                            Rp{req.amount.toLocaleString('id-ID')}
+                          </span>
+                          <span className="text-xs font-semibold text-zinc-900">
+                            {req.purpose}
+                          </span>
+                          <span className="text-[10px] text-zinc-400">
+                            {format(new Date(req.submissionDate), "dd/MM/yyyy")}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                           <StatusBadge status={req.status} />
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                         <span className="text-[10px] uppercase font-bold text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full border border-zinc-200">
-                            {req.status}
-                         </span>
-                      </div>
+                      
+                      {req.notes && (
+                        <div className="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                          <p className="text-[9px] font-black uppercase text-blue-600 tracking-widest mb-1">Catatan Verifikator:</p>
+                          <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.notes}</p>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}

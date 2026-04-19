@@ -16,6 +16,7 @@ export default function StatusBadge({ status }: { status: string }) {
   const styles = {
     PENDING: "bg-yellow-50 text-yellow-700 border-yellow-200",
     LEADER_VERIFIED: "bg-blue-50 text-blue-700 border-blue-200",
+    FINANCE_VERIFIED: "bg-purple-50 text-purple-700 border-purple-200",
     APPROVED: "bg-emerald-50 text-emerald-700 border-emerald-200",
     REJECTED: "bg-red-50 text-red-700 border-red-200",
     PAID: "bg-zinc-100 text-zinc-700 border-zinc-200",
@@ -24,6 +25,7 @@ export default function StatusBadge({ status }: { status: string }) {
   const labels = {
     PENDING: "Menunggu Verifikasi",
     LEADER_VERIFIED: "Terverifikasi Verifikator",
+    FINANCE_VERIFIED: "Konfirmasi Finance",
     APPROVED: "Disetujui Admin",
     REJECTED: "Ditolak",
     PAID: "Lunas",
@@ -32,6 +34,7 @@ export default function StatusBadge({ status }: { status: string }) {
   const icons = {
     PENDING: <Clock size={12} />,
     LEADER_VERIFIED: <ShieldCheck size={12} />,
+    FINANCE_VERIFIED: <Wallet size={12} />,
     APPROVED: <CheckCircle2 size={12} />,
     REJECTED: <XCircle size={12} />,
     PAID: <Wallet size={12} />,
@@ -45,7 +48,7 @@ export default function StatusBadge({ status }: { status: string }) {
   );
 }
 
-export function KasbonCard({ request, showActions = false, onVerify, onApprove }: any) {
+export function KasbonCard({ request, showActions = false, onVerify, onFinance, onApprove }: any) {
   const [note, setNote] = useState("");
 
   return (
@@ -153,6 +156,7 @@ export function KasbonCard({ request, showActions = false, onVerify, onApprove }
             <button
               onClick={() => {
                 if (onVerify) onVerify(request.id, true, note);
+                else if (onFinance) onFinance(request.id, true, note);
                 else if (onApprove) onApprove(request.id, true, note);
               }}
               className="flex-1 rounded-xl bg-emerald-600 py-3 text-[10px] font-black tracking-widest text-white shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98]"
@@ -166,6 +170,7 @@ export function KasbonCard({ request, showActions = false, onVerify, onApprove }
                   return;
                 }
                 if (onVerify) onVerify(request.id, false, note);
+                else if (onFinance) onFinance(request.id, false, note);
                 else if (onApprove) onApprove(request.id, false, note);
               }}
               className="flex-1 rounded-xl bg-zinc-100 py-3 text-[10px] font-black tracking-widest text-zinc-600 transition-all hover:bg-red-600 hover:text-white hover:shadow-lg hover:shadow-red-600/20 active:scale-[0.98]"
