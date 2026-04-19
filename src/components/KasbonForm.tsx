@@ -20,6 +20,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
   const [showSOP, setShowSOP] = useState(false);
 
   // Form states for validation
+  const [employeeName, setEmployeeName] = useState("");
   const [joinDate, setJoinDate] = useState("");
   const [spStatus, setSpStatus] = useState<string>("TIDAK");
   const [spDescription, setSpDescription] = useState("");
@@ -39,7 +40,13 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
   const tenureInMonths = joinDate ? differenceInMonths(new Date(), new Date(joinDate)) : 0;
   const amountNum = parseFloat(parseNumber(requestAmount)) || 0;
   
-  const isEligible = tenureInMonths >= 3 && isPreviousPaid === "YA" && amountNum > 0;
+  const isEligible = (joinDate !== "" && tenureInMonths >= 3) && isPreviousPaid === "YA" && amountNum > 0;
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow letters and spaces, and convert to lowercase
+    const value = e.target.value.toLowerCase().replace(/[^a-z\s]/g, "");
+    setEmployeeName(value);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +56,13 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
     }
 
     if (!isEligible) {
-      setMessage({ type: "error", text: "Mohon maaf, Anda belum memenuhi kriteria SOP (Min. 3 bulan kerja & Kasbon sebelumnya lunas)." });
+      if (tenureInMonths < 3) {
+        setMessage({ type: "error", text: "Mohon maaf, Anda belum memenuhi kriteria SOP (Min. 3 bulan kerja)." });
+      } else if (isPreviousPaid === "TIDAK") {
+        setMessage({ type: "error", text: "Mohon maaf, Kasbon sebelumnya harus lunas terlebih dahulu." });
+      } else {
+        setMessage({ type: "error", text: "Mohon lengkapi formulir dengan benar." });
+      }
       return;
     }
 
@@ -70,10 +83,12 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
     if (result.success) {
       setMessage({ type: "success", text: "Pengajuan kasbon berhasil dikirim! Menunggu verifikasi SPV Divisi." });
       setAgreed(false);
-      form.reset();
+      setEmployeeName("");
       setJoinDate("");
       setRequestAmount("");
       setSpDescription("");
+      setIsPreviousPaid("YA");
+      setSpStatus("TIDAK");
     } else {
       setMessage({ type: "error", text: result.error || "Gagal mengirim pengajuan." });
     }
@@ -85,44 +100,44 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
       {/* SOP MODAL */}
       {showSOP && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
-          <div className="fastprix-card max-h-[90vh] w-full max-w-2xl overflow-y-auto bg-zinc-900 px-6 py-8 text-white border-t-8 border-red-600 shadow-2xl">
-            <h3 className="mb-6 text-xl font-black italic tracking-tighter text-red-500 uppercase">Pusat Informasi SOP</h3>
-            <div className="space-y-6 text-[11px] leading-relaxed text-zinc-300">
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">1. KRITERIA KELAYAKAN</p>
-                <ul className="space-y-2 list-disc pl-4 text-zinc-400">
+          <div className="fastprix-card max-h-[90vh] w-full max-w-2xl overflow-y-auto bg-white px-6 py-8 text-zinc-900 border-t-8 border-red-600 shadow-2xl">
+            <h3 className="mb-6 text-xl font-black italic tracking-tighter text-red-600 uppercase">Pusat Informasi SOP</h3>
+            <div className="space-y-6 text-xs leading-relaxed text-zinc-800">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">1. KRITERIA KELAYAKAN</p>
+                <ul className="space-y-2 list-disc pl-4 text-zinc-700 font-medium">
                   <li>Karyawan telah bekerja minimal 3 bulan secara kontinu.</li>
                   <li>Masa SP (Surat Peringatan) tetap dapat mengajukan dengan penjelasan.</li>
                   <li>Saldo kasbon sebelumnya sudah lunas 100%.</li>
                 </ul>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">2. KEPERLUAN NOMINAL</p>
-                <ul className="space-y-2 list-disc pl-4 text-zinc-400">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">2. KEPERLUAN NOMINAL</p>
+                <ul className="space-y-2 list-disc pl-4 text-zinc-700 font-medium">
                   <li>Hanya untuk keperluan mendesak (Kesehatan, Pendidikan, Musibah).</li>
                   <li>Bukan untuk gaya hidup atau cicilan konsumtif.</li>
                 </ul>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">3. WAKTU PENGAJUAN</p>
-                <p className="text-zinc-400">Hanya tanggal 15 sd 20 setiap bulannya (kecuali darurat medis + surat dokter).</p>
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">3. WAKTU PENGAJUAN</p>
+                <p className="text-zinc-700 font-medium">Hanya tanggal 15 sd 20 setiap bulannya (kecuali darurat medis + surat dokter).</p>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">4. PROSEDUR PENGAJUAN (ALUR)</p>
-                <ol className="space-y-2 list-decimal pl-4 text-zinc-400">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">4. PROSEDUR PENGAJUAN (ALUR)</p>
+                <ol className="space-y-2 list-decimal pl-4 text-zinc-700 font-medium">
                   <li>Isi Formulir Kasbon online/admin.</li>
-                  <li>Verifikasi Leader (Kepala Regu).</li>
-                  <li>Persetujuan Akhir Owner/Manager.</li>
+                  <li>Verifikasi Verifikator (HC/Finance/SPV).</li>
+                  <li>Persetujuan Akhir Admin.</li>
                   <li>Pencairan Dana (Tunai/Transfer).</li>
                 </ol>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">5. SKEMA PENGEMBALIAN</p>
-                <ul className="space-y-2 list-disc pl-4 text-zinc-400">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">5. SKEMA PENGEMBALIAN</p>
+                <ul className="space-y-2 list-disc pl-4 text-zinc-700 font-medium">
                   <li>Dipotong langsung dari gaji bulan berjalan secara Lunas.</li>
                   <li>Maksimal tenor 2 bulan agar tidak membebani slip gaji.</li>
                 </ul>
@@ -130,7 +145,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
             </div>
             <button 
               onClick={() => setShowSOP(false)}
-              className="mt-8 w-full rounded-xl bg-white py-4 text-xs font-black uppercase tracking-widest text-zinc-900 hover:bg-zinc-200 transition-colors"
+              className="mt-8 w-full rounded-xl bg-zinc-900 py-4 text-xs font-black uppercase tracking-widest text-white hover:bg-black transition-colors"
             >
               SAYA MENGERTI & TUTUP
             </button>
@@ -141,10 +156,10 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
       <div className="fastprix-card shadow-2xl">
         <div className="mb-8 flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-600 text-white shadow-lg shadow-red-600/20">
-            <DollarSign size={28} />
+            <MirrorIcon size={28} />
           </div>
           <div>
-            <h2 className="text-2xl font-black italic text-zinc-900 dark:text-white uppercase tracking-tighter">
+            <h2 className="text-2xl font-black italic text-zinc-900 uppercase tracking-tighter">
               FORM PENGAJUAN <span className="text-red-600">KASBON</span>
             </h2>
             <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-black">
@@ -156,21 +171,23 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* SECTION 1: PERSONAL & WORK INFO */}
           <div className="space-y-6">
-            <h3 className="flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:border-zinc-800">
+            <h3 className="flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
               <User size={14} /> Data Karyawan & Pekerjaan
             </h3>
             
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Nama Lengkap
                 </label>
                 <input
                   type="text"
                   name="employeeName"
+                  value={employeeName}
+                  onChange={handleNameChange}
                   required
-                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
-                  placeholder="Input nama lengkap sesuai KTP"
+                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 placeholder:font-medium placeholder:italic"
+                  placeholder="masukkan nama (huruf kecil semua)"
                 />
               </div>
 
@@ -244,13 +261,13 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
 
           {/* SECTION 2: SOP QUESTIONS */}
           <div className="space-y-6">
-            <h3 className="flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:border-zinc-800">
+            <h3 className="flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
               <ClipboardCheck size={14} /> Kepatuhan & SOP (Self Assessment)
             </h3>
             
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="rounded-2xl border-2 border-zinc-100 bg-zinc-50 p-4">
-                <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                    Sedang dalam masa SP?
                 </label>
                 <div className="flex gap-4">
@@ -272,7 +289,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
               </div>
 
               <div className="rounded-2xl border-2 border-zinc-100 bg-zinc-50 p-4">
-                <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Saldo Kasbon Sebelumnya Lunas?
                 </label>
                 <div className="flex gap-4">
@@ -297,7 +314,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
             {/* SP DESCRIPTION FIELD */}
             {spStatus === "YA" && (
               <div className="animate-in fade-in slide-in-from-top-4 duration-300">
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Penjelasan Masa SP (Wajib diisi)
                 </label>
                 <textarea
@@ -307,16 +324,17 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   onChange={(e) => setSpDescription(e.target.value)}
                   rows={3}
                   className="block w-full rounded-2xl border-2 border-red-600/30 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
-                  placeholder="Berikan alasan atau penjelasan mengenai status SP Anda saat ini agar dapat dipertimbangkan oleh SPV/Admin..."
+                  placeholder="Berikan alasan atau penjelasan mengenai status SP Anda saat ini..."
                 />
               </div>
             )}
             
-            {(!isEligible && (joinDate || isPreviousPaid === "TIDAK")) && (
+            {/* ALERT BOX - FIXED LOGIC */}
+            {((joinDate !== "" && tenureInMonths < 3) || isPreviousPaid === "TIDAK") && (
               <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-[10px] font-black uppercase text-red-600 border border-red-200">
                 <AlertCircle size={16} />
                 <div className="flex flex-col gap-1">
-                   {tenureInMonths < 3 && <p>• Belum Bekerja 3 Bulan</p>}
+                   {joinDate !== "" && tenureInMonths < 3 && <p>• Belum Bekerja 3 Bulan</p>}
                    {isPreviousPaid === "TIDAK" && <p>• Kasbon Sebelumnya Belum Lunas</p>}
                 </div>
               </div>
@@ -325,13 +343,13 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
 
           {/* SECTION 3: REQUEST DATA */}
           <div className="space-y-6">
-            <h3 className="flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:border-zinc-800">
+            <h3 className="flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
               <DollarSign size={14} /> Data Pinjaman
             </h3>
             
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Nominal Kasbon
                 </label>
                 <div className="relative">
@@ -342,14 +360,14 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                     required
                     value={formatNumber(requestAmount)}
                     onChange={(e) => setRequestAmount(parseNumber(e.target.value))}
-                    className={`block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10`}
+                    className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
                     placeholder="Contoh: 500.000"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Tenor Pelunasan
                 </label>
                 <select
@@ -364,7 +382,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
             </div>
 
             <div>
-              <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+              <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                 Tujuan Penggunaan (Penjelasan Lengkap)
               </label>
               <textarea
@@ -372,7 +390,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                 required
                 rows={4}
                 className="block w-full rounded-2xl border-2 border-zinc-200 bg-white py-4 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10"
-                placeholder="Jelaskan kebutuhan Anda secara detail agar mempermudah evaluasi SPV..."
+                placeholder="Jelaskan kebutuhan Anda secara detail..."
               />
             </div>
           </div>
@@ -385,7 +403,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                onChange={(e) => setAgreed(e.target.checked)}
                className="h-5 w-5 rounded accent-red-600 cursor-pointer"
              />
-             <label htmlFor="agreed" className="text-xs font-bold text-zinc-600 dark:text-zinc-400 cursor-pointer">
+             <label htmlFor="agreed" className="text-xs font-bold text-zinc-600 cursor-pointer">
                Dengan ini saya sudah membaca ketentuan <button type="button" onClick={() => setShowSOP(true)} className="text-red-600 underline hover:text-red-700">sop dan layanan</button> yang berlaku.
              </label>
           </div>
@@ -414,4 +432,9 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
       </div>
     </div>
   );
+}
+
+// Icon helper
+function MirrorIcon({ size }: { size: number }) {
+  return <DollarSign size={size} />;
 }
