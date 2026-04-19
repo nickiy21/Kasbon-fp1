@@ -22,7 +22,7 @@ export default async function HistoryPage() {
       ],
       status: { not: "PENDING" }
     } as any,
-    include: { employee: true },
+    include: { employee: true, leader: true },
     orderBy: { submissionDate: "desc" },
   });
 

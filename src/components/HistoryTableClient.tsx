@@ -50,6 +50,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
       "Tanggal Pengajuan": format(new Date(req.submissionDate), "dd/MM/yyyy"),
       "Nama Karyawan": req.employeeName || req.employee?.name,
       "Divisi": req.division,
+      "SPV Verifikasi": req.leader?.username || req.leader?.name || "-",
       "Tujuan": req.purpose,
       "Nominal": req.amount,
       "Tenor (Bulan)": req.repaymentMonths,
@@ -118,6 +119,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
           "Tanggal Pengajuan": format(new Date(req.submissionDate), "dd/MM/yyyy"),
           "Nama Karyawan": currentEmployee,
           "Divisi": currentDivision,
+          "SPV Verifikasi": req.leader?.username || req.leader?.name || "-",
           "Tujuan": req.purpose,
           "Nominal": req.amount,
           "Tenor (Bulan)": req.repaymentMonths,
@@ -161,7 +163,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const tableColumn = ["Tgl", "Karyawan", "Divisi", "Nominal", "Tenor", "Status"];
+    const tableColumn = ["Tgl", "Karyawan", "Divisi", "SPV", "Nominal", "Tenor", "Status"];
     
     // Add title
     doc.setFontSize(18);
@@ -189,6 +191,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
         format(new Date(req.submissionDate), "dd/MM/yy"),
         req.employeeName || req.employee?.name,
         req.division,
+        req.leader?.username || req.leader?.name || "-",
         `Rp${req.amount.toLocaleString()}`,
         `${req.repaymentMonths} Bln`,
         req.status,
@@ -296,6 +299,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Tgl Pengajuan</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Karyawan</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Divisi</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">SPV</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Nominal</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Tenor</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 text-center">Status</th>
@@ -328,6 +332,11 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                       </span>
                     </td>
                     <td className="p-4">
+                      <span className="text-[10px] font-bold text-red-600 uppercase tracking-widest">
+                        {req.leader?.username || req.leader?.name || "-"}
+                      </span>
+                    </td>
+                    <td className="p-4">
                       <span className="text-sm font-black text-red-600">
                         Rp{req.amount.toLocaleString('id-ID')}
                       </span>
@@ -352,12 +361,6 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
           <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
             Menampilkan {filteredRequests.length} dari {initialRequests.length} data
           </p>
-          <div className="text-right">
-             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Nominal Terfilter</p>
-             <p className="text-sm font-black text-red-600">
-               Rp{filteredRequests.reduce((sum, req) => sum + req.amount, 0).toLocaleString('id-ID')}
-             </p>
-          </div>
         </div>
       </div>
     </div>

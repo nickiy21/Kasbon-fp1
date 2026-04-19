@@ -39,7 +39,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
   const tenureInMonths = joinDate ? differenceInMonths(new Date(), new Date(joinDate)) : 0;
   const amountNum = parseFloat(parseNumber(requestAmount)) || 0;
   
-  const isEligible = tenureInMonths >= 2 && isPreviousPaid === "YA" && amountNum > 0;
+  const isEligible = tenureInMonths >= 3 && isPreviousPaid === "YA" && amountNum > 0;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
     }
 
     if (!isEligible) {
-      setMessage({ type: "error", text: "Mohon maaf, Anda belum memenuhi kriteria SOP (Min. 2 bulan kerja & Kasbon sebelumnya lunas)." });
+      setMessage({ type: "error", text: "Mohon maaf, Anda belum memenuhi kriteria SOP (Min. 3 bulan kerja & Kasbon sebelumnya lunas)." });
       return;
     }
 
@@ -91,7 +91,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
               <div className="pb-4 border-b border-zinc-800">
                 <p className="font-black text-white uppercase tracking-widest mb-2">1. KRITERIA KELAYAKAN</p>
                 <ul className="space-y-2 list-disc pl-4 text-zinc-400">
-                  <li>Karyawan telah bekerja minimal 2 bulan secara kontinu.</li>
+                  <li>Karyawan telah bekerja minimal 3 bulan secara kontinu.</li>
                   <li>Masa SP (Surat Peringatan) tetap dapat mengajukan dengan penjelasan.</li>
                   <li>Saldo kasbon sebelumnya sudah lunas 100%.</li>
                 </ul>
@@ -233,10 +233,10 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   value={joinDate}
                   onChange={(e) => setJoinDate(e.target.value)}
                   required
-                  className={`block w-full rounded-xl border-2 py-3 px-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${joinDate && tenureInMonths < 2 ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white`}
+                  className={`block w-full rounded-xl border-2 py-3 px-4 text-sm font-black text-black transition-all focus:outline-none focus:ring-4 ${joinDate && tenureInMonths < 3 ? 'border-red-500 focus:border-red-600 focus:ring-red-500/10' : 'border-zinc-200 focus:border-red-600 focus:ring-red-600/10'} bg-white`}
                 />
-                {joinDate && tenureInMonths < 2 && (
-                  <p className="mt-1 text-[10px] font-black text-red-600 animate-pulse uppercase">* Harus bekerja minimal 2 bulan</p>
+                {joinDate && tenureInMonths < 3 && (
+                  <p className="mt-1 text-[10px] font-black text-red-600 animate-pulse uppercase">* Harus bekerja minimal 3 bulan</p>
                 )}
               </div>
             </div>
@@ -316,7 +316,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
               <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-[10px] font-black uppercase text-red-600 border border-red-200">
                 <AlertCircle size={16} />
                 <div className="flex flex-col gap-1">
-                   {tenureInMonths < 2 && <p>• Belum Bekerja 2 Bulan</p>}
+                   {tenureInMonths < 3 && <p>• Belum Bekerja 3 Bulan</p>}
                    {isPreviousPaid === "TIDAK" && <p>• Kasbon Sebelumnya Belum Lunas</p>}
                 </div>
               </div>
