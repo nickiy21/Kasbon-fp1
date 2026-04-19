@@ -17,8 +17,10 @@ export default async function ApprovalsPage() {
       OR: [
         // Step 1: Assigned Verificator or Admin sees PENDING
         { status: "PENDING", accRole: role === "ADMIN" ? undefined : role },
-        // Step 2: Admin sees LEADER_VERIFIED
-        { status: "LEADER_VERIFIED", id: role === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
+        // Step 2: Finance or Admin sees LEADER_VERIFIED
+        { status: "LEADER_VERIFIED", id: ((role as string) === "ADMIN" || (role as string) === "FINANCE") ? { not: "" } : { equals: "__non_existent__" } },
+        // Step 3: Admin sees FINANCE_VERIFIED
+        { status: "FINANCE_VERIFIED", id: (role as string) === "ADMIN" ? { not: "" } : { equals: "__non_existent__" } }
       ]
     } as any,
     include: { employee: true },
@@ -34,7 +36,7 @@ export default async function ApprovalsPage() {
           ANTREAN <span className="text-red-600">PERSETUJUAN</span>
         </h1>
         <p className="mt-2 text-zinc-500 uppercase tracking-widest text-[10px] font-bold">
-          {role === "ADMIN" ? "Persetujuan Akhir Admin" : "Verifikasi Verifikator Departemen"}
+          {role === "ADMIN" ? "Persetujuan Akhir Admin" : role === "FINANCE" ? "Konfirmasi Finance" : "Verifikasi Verifikator Departemen"}
         </p>
       </div>
 
