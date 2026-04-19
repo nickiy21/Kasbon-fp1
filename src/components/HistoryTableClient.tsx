@@ -55,6 +55,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
       "Nominal": req.amount,
       "Tenor (Bulan)": req.repaymentMonths,
       "Status": req.status,
+      "Catatan": req.notes || "-",
     }));
 
     // Filter by categories
@@ -124,6 +125,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
           "Nominal": req.amount,
           "Tenor (Bulan)": req.repaymentMonths,
           "Status": req.status,
+          "Catatan": req.notes || "-",
         });
 
         lastEmployee = currentEmployee;
@@ -163,7 +165,7 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const tableColumn = ["Tgl", "Karyawan", "Divisi", "SPV", "Nominal", "Tenor", "Status"];
+    const tableColumn = ["Tgl", "Karyawan", "Divisi", "SPV", "Nominal", "Status", "Catatan"];
     
     // Add title
     doc.setFontSize(18);
@@ -193,8 +195,8 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
         req.division,
         req.leader?.username || req.leader?.name || "-",
         `Rp${req.amount.toLocaleString()}`,
-        `${req.repaymentMonths} Bln`,
         req.status,
+        req.notes || "-",
       ]);
 
       autoTable(doc, {
@@ -302,7 +304,8 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">SPV</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Nominal</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Tenor</th>
-                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 text-center">Status</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Status</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Catatan</th>
               </tr>
             </thead>
             <tbody>
@@ -348,6 +351,11 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                     </td>
                     <td className="p-4 text-center">
                       <StatusBadge status={req.status} />
+                    </td>
+                    <td className="p-4">
+                      <p className="max-w-[150px] truncate text-[10px] font-bold text-zinc-500 italic" title={req.notes}>
+                        {req.notes || "-"}
+                      </p>
                     </td>
                   </tr>
                 ))

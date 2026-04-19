@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { 
   Clock, 
   CheckCircle2, 
@@ -43,6 +46,8 @@ export default function StatusBadge({ status }: { status: string }) {
 }
 
 export function KasbonCard({ request, showActions = false, onVerify, onApprove }: any) {
+  const [note, setNote] = useState("");
+
   return (
     <div className="fastprix-card overflow-hidden border-t-4 border-t-zinc-900 group hover:border-t-red-600 transition-all duration-300">
       <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
@@ -112,6 +117,17 @@ export function KasbonCard({ request, showActions = false, onVerify, onApprove }
             </p>
           </div>
         )}
+
+        {request.notes && (
+          <div className="rounded-xl bg-blue-50 p-3 border border-blue-100">
+            <span className="text-[9px] uppercase font-black tracking-widest text-blue-600 flex items-center gap-1">
+               Catatan Verifikator/Admin
+            </span>
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-zinc-800">
+              {request.notes}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 flex items-center justify-between text-[9px] font-black text-zinc-400 uppercase tracking-widest">
@@ -120,25 +136,43 @@ export function KasbonCard({ request, showActions = false, onVerify, onApprove }
       </div>
 
       {showActions && (
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={() => {
-              if (onVerify) onVerify(request.id, true);
-              else if (onApprove) onApprove(request.id, true);
-            }}
-            className="flex-1 rounded-xl bg-emerald-600 py-3 text-[10px] font-black tracking-widest text-white shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            APPROVE
-          </button>
-          <button
-            onClick={() => {
-              if (onVerify) onVerify(request.id, false);
-              else if (onApprove) onApprove(request.id, false);
-            }}
-            className="flex-1 rounded-xl bg-zinc-100 py-3 text-[10px] font-black tracking-widest text-zinc-600 transition-all hover:bg-red-600 hover:text-white hover:shadow-lg hover:shadow-red-600/20 active:scale-[0.98]"
-          >
-            REJECT
-          </button>
+        <div className="mt-6 flex flex-col gap-4">
+          <div>
+            <label className="mb-2 block text-[9px] font-black uppercase tracking-widest text-zinc-400">
+              Catatan (Wajib jika menolak)
+            </label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Berikan alasan atau catatan..."
+              className="w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 p-3 text-xs font-bold text-zinc-900 focus:border-red-600 focus:outline-none"
+              rows={2}
+            />
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                if (onVerify) onVerify(request.id, true, note);
+                else if (onApprove) onApprove(request.id, true, note);
+              }}
+              className="flex-1 rounded-xl bg-emerald-600 py-3 text-[10px] font-black tracking-widest text-white shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              APPROVE
+            </button>
+            <button
+              onClick={() => {
+                if (!note) {
+                  alert("Mohon isi catatan alasan penolakan.");
+                  return;
+                }
+                if (onVerify) onVerify(request.id, false, note);
+                else if (onApprove) onApprove(request.id, false, note);
+              }}
+              className="flex-1 rounded-xl bg-zinc-100 py-3 text-[10px] font-black tracking-widest text-zinc-600 transition-all hover:bg-red-600 hover:text-white hover:shadow-lg hover:shadow-red-600/20 active:scale-[0.98]"
+            >
+              REJECT
+            </button>
+          </div>
         </div>
       )}
     </div>

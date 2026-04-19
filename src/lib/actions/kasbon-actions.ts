@@ -69,7 +69,7 @@ export async function submitKasbon(formData: FormData): Promise<KasbonResponse> 
   }
 }
 
-export async function verifyByLeader(requestId: string, approve: boolean): Promise<KasbonResponse> {
+export async function verifyByLeader(requestId: string, approve: boolean, notes?: string): Promise<KasbonResponse> {
   const session = await getServerSession(authOptions);
   if (!session) return { success: false, error: "Unauthorized" };
 
@@ -97,6 +97,7 @@ export async function verifyByLeader(requestId: string, approve: boolean): Promi
       data: {
         status: approve ? "LEADER_VERIFIED" : "REJECTED",
         leaderId: session.user.id,
+        notes: notes || null,
       },
     });
     revalidatePath("/approvals");
@@ -107,7 +108,7 @@ export async function verifyByLeader(requestId: string, approve: boolean): Promi
   }
 }
 
-export async function approveByOwner(requestId: string, approve: boolean): Promise<KasbonResponse> {
+export async function approveByOwner(requestId: string, approve: boolean, notes?: string): Promise<KasbonResponse> {
   const session = await getServerSession(authOptions);
   
   // Only Admin can perform final approval
@@ -129,6 +130,7 @@ export async function approveByOwner(requestId: string, approve: boolean): Promi
       data: {
         status: approve ? "APPROVED" : "REJECTED",
         ownerId: session.user.id,
+        notes: notes || null,
       },
     });
     revalidatePath("/approvals");

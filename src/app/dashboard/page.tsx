@@ -209,38 +209,37 @@ export default async function DashboardPage() {
 
         {/* SOP REMINDER / QUICK ACTIONS */}
         <div className="space-y-6">
-          <div className="fastprix-card bg-zinc-900 px-6 py-8 text-white border-t-8 border-red-600">
-            <h3 className="mb-6 text-xl font-black italic tracking-tighter text-red-500 uppercase">Pusat Informasi SOP</h3>
+          <div className="fastprix-card bg-white px-6 py-8 text-zinc-900 border-t-8 border-red-600 shadow-xl border border-zinc-100">
+            <h3 className="mb-6 text-xl font-black italic tracking-tighter text-red-600 uppercase">Pusat Informasi SOP</h3>
             <div className="space-y-6 text-[11px] leading-relaxed">
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">1. KRITERIA KELAYAKAN</p>
-                <ul className="space-y-2 text-zinc-400 list-disc pl-4">
-                  <li>Bekerja minimal 6 bulan secara kontinu.</li>
-                  <li>Tidak sedang dalam masa surat peringatan (SP).</li>
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">1. KRITERIA KELAYAKAN</p>
+                <ul className="space-y-2 text-zinc-700 list-disc pl-4 font-medium">
+                  <li>Bekerja minimal 3 bulan secara kontinu.</li>
+                  <li>Masa SP (Surat Peringatan) tetap dapat mengajukan dengan penjelasan.</li>
                   <li>Saldo kasbon sebelumnya sudah lunas 100%.</li>
                 </ul>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">2. BATAS MAKSIMAL</p>
-                <ul className="space-y-2 text-zinc-400 list-disc pl-4">
-                  <li>Maksimal Kasbon: 20% dari gaji pokok.</li>
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">2. KEPERLUAN NOMINAL</p>
+                <ul className="space-y-2 text-zinc-700 list-disc pl-4 font-medium">
                   <li>Hanya untuk keperluan mendesak (Kesehatan, Pendidikan, Musibah).</li>
                   <li>Bukan untuk gaya hidup atau cicilan konsumtif.</li>
                 </ul>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">3. WAKTU PENGAJUAN</p>
-                <ul className="space-y-2 text-zinc-400 list-disc pl-4">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">3. WAKTU PENGAJUAN</p>
+                <ul className="space-y-2 text-zinc-700 list-disc pl-4 font-medium">
                   <li>Hanya tanggal 15 sd 20 setiap bulannya.</li>
                   <li>Di luar tanggal tersebut ditolak (kecuali Darurat Medis + Surat Dokter).</li>
                 </ul>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">4. PROSEDUR (BIROKRASI)</p>
-                <ol className="space-y-2 text-zinc-400 list-decimal pl-4">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">4. PROSEDUR (BIROKRASI)</p>
+                <ol className="space-y-2 text-zinc-700 list-decimal pl-4 font-medium">
                   <li>Isi Formulir Kasbon online/admin.</li>
                   <li>Verifikasi Verifikator (HC/Finance/SPV).</li>
                   <li>Persetujuan Akhir Admin.</li>
@@ -248,22 +247,22 @@ export default async function DashboardPage() {
                 </ol>
               </div>
 
-              <div className="pb-4 border-b border-zinc-800">
-                <p className="font-black text-white uppercase tracking-widest mb-2">5. SKEMA PENGEMBALIAN</p>
-                <ul className="space-y-2 text-zinc-400 list-disc pl-4">
+              <div className="pb-4 border-b border-zinc-100">
+                <p className="font-black text-zinc-900 uppercase tracking-widest mb-2">5. SKEMA PENGEMBALIAN</p>
+                <ul className="space-y-2 text-zinc-700 list-disc pl-4 font-medium">
                   <li>Dipotong langsung dari gaji bulan berjalan secara Lunas.</li>
                   <li>Maksimal tenor 2 bulan agar tidak membebani slip gaji.</li>
                 </ul>
               </div>
 
-              <div className="bg-red-600/20 p-4 border border-red-600/30 rounded-xl">
-                <p className="font-black text-red-500 uppercase tracking-widest mb-2">6. SANKSI & LARANGAN</p>
-                <p className="text-zinc-300 italic">
+              <div className="bg-red-50 p-4 border border-red-100 rounded-xl">
+                <p className="font-black text-red-600 uppercase tracking-widest mb-2">6. SANKSI & LARANGAN</p>
+                <p className="text-zinc-800 italic font-medium">
                   Dilarang kasbon antar rekan kerja di bengkel. Penyalahgunaan untuk judi online/negatif sanksi disiplin berat & hak kasbon dicabut permanen.
                 </p>
               </div>
               
-              <p className="text-[9px] font-bold text-zinc-600 uppercase pt-4">Berlaku Efektif: Mei 2026</p>
+              <p className="text-[9px] font-black text-zinc-400 uppercase pt-4 tracking-tighter">Berlaku Efektif: Mei 2026</p>
             </div>
           </div>
         </div>

@@ -10,14 +10,14 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
   const [requests, setRequests] = useState(initialRequests);
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleAction = async (id: string, approve: boolean, type: 'leader' | 'owner') => {
+  const handleAction = async (id: string, approve: boolean, type: 'leader' | 'owner', note?: string) => {
     setLoading(id);
     let res: KasbonResponse;
 
     if (type === 'leader') {
-      res = await verifyByLeader(id, approve);
+      res = await verifyByLeader(id, approve, note);
     } else {
-      res = await approveByOwner(id, approve);
+      res = await approveByOwner(id, approve, note);
     }
 
     if (res.success) {
@@ -59,8 +59,8 @@ export default function ApprovalsList({ initialRequests }: { initialRequests: an
             <KasbonCard 
               request={req} 
               showActions={true}
-              onVerify={canVerify ? (id: string, approve: boolean) => handleAction(id, approve, 'leader') : undefined}
-              onApprove={canApprove ? (id: string, approve: boolean) => handleAction(id, approve, 'owner') : undefined}
+              onVerify={canVerify ? (id: string, approve: boolean, note?: string) => handleAction(id, approve, 'leader', note) : undefined}
+              onApprove={canApprove ? (id: string, approve: boolean, note?: string) => handleAction(id, approve, 'owner', note) : undefined}
             />
           </div>
         );

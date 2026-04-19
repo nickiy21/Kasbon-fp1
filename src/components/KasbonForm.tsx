@@ -187,7 +187,7 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   onChange={handleNameChange}
                   required
                   className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 placeholder:font-medium placeholder:italic"
-                  placeholder="masukkan nama (huruf kecil semua)"
+                  placeholder="masukkan nama"
                 />
               </div>
 
