@@ -61,6 +61,9 @@ export function KasbonCard({ request, showActions = false, onVerify, onFinance, 
           <span className="mt-1 text-base font-black italic tracking-tighter text-zinc-900 uppercase">
             {request.employeeName || request.employee.name}
           </span>
+          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">
+            NIK: {request.nik || "-"}
+          </span>
         </div>
         <StatusBadge status={request.status} />
       </div>

@@ -155,9 +155,13 @@ export default async function DashboardPage() {
                             <span className="text-[10px] font-black italic text-red-600 uppercase">
                               {req.employeeName || req.employee?.name}
                             </span>
+                            <span className="ml-2 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                              NIK: {req.nik || "-"}
+                            </span>
                             <p className="text-sm font-black text-zinc-900 uppercase">
                               Rp{req.amount.toLocaleString('id-ID')}
                             </p>
+
                             <p className="text-[10px] text-zinc-400 italic">
                               "{req.purpose}"
                             </p>

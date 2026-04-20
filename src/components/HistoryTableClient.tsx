@@ -49,7 +49,9 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
     const formatData = (items: any[]) => items.map((req) => ({
       "Tanggal Pengajuan": format(new Date(req.submissionDate), "dd/MM/yyyy"),
       "Nama Karyawan": req.employeeName || req.employee?.name,
+      "NIK": req.nik || "-",
       "Divisi": req.division,
+
       "SPV Verifikasi": req.leader?.username || req.leader?.name || "-",
       "Tujuan": req.purpose,
       "Nominal": req.amount,
@@ -119,7 +121,9 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
         processed.push({
           "Tanggal Pengajuan": format(new Date(req.submissionDate), "dd/MM/yyyy"),
           "Nama Karyawan": currentEmployee,
+          "NIK": req.nik || "-",
           "Divisi": currentDivision,
+
           "SPV Verifikasi": req.leader?.username || req.leader?.name || "-",
           "Tujuan": req.purpose,
           "Nominal": req.amount,
@@ -165,7 +169,8 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const tableColumn = ["Tgl", "Karyawan", "Divisi", "SPV", "Nominal", "Status", "Catatan"];
+    const tableColumn = ["Tgl", "Karyawan", "NIK", "Divisi", "SPV", "Nominal", "Status", "Catatan"];
+
     
     // Add title
     doc.setFontSize(18);
@@ -192,9 +197,11 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
       const rows = data.map((req) => [
         format(new Date(req.submissionDate), "dd/MM/yy"),
         req.employeeName || req.employee?.name,
+        req.nik || "-",
         req.division,
         req.leader?.username || req.leader?.name || "-",
         `Rp${req.amount.toLocaleString()}`,
+
         req.status,
         req.notes || "-",
       ]);
@@ -300,7 +307,9 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
               <tr className="border-b border-zinc-200 bg-zinc-50">
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Tgl Pengajuan</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Karyawan</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">NIK</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Divisi</th>
+
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">SPV</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Nominal</th>
                 <th className="p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400">Tenor</th>
@@ -330,6 +339,12 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                       <p className="text-[10px] text-zinc-400 italic font-medium">"{req.purpose}"</p>
                     </td>
                     <td className="p-4">
+                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                        {req.nik || "-"}
+                      </span>
+                    </td>
+                    <td className="p-4">
+
                       <span className="inline-block rounded bg-zinc-100 px-2 py-0.5 text-[9px] font-black text-zinc-600">
                         {req.division}
                       </span>
