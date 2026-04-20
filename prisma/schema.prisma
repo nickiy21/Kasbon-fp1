@@ -59,6 +59,7 @@ model User {
   name          String?
   username      String    @unique
   password      String
+  nik           String?   @unique
   role          Role      @default(EMPLOYEE)
   division      Division?
   createdAt     DateTime  @default(now())
@@ -93,6 +94,7 @@ model KasbonRequest {
   
   // New fields for the updated form
   employeeName        String?
+  nik                 String?
   division            Division?    @default(DOORSMER)
   joinDate            DateTime?
   spStatus            Boolean?     @default(false)

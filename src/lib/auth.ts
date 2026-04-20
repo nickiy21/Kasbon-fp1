@@ -46,7 +46,9 @@ export const authOptions: NextAuthOptions = {
           username: user.username,
           role: user.role,
           division: user.division,
+          nik: user.nik,
         };
+
         } catch (error) {
           console.error("Auth Exception:", error);
           return null;
@@ -61,7 +63,9 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.username = user.username;
         token.division = user.division;
+        token.nik = user.nik;
       }
+
       return token;
     },
     async session({ session, token }: { session: any; token: any }) {
@@ -70,7 +74,9 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id;
         session.user.username = token.username;
         session.user.division = token.division;
+        session.user.nik = token.nik;
       }
+
       return session;
     },
   },

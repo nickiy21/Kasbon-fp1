@@ -15,14 +15,25 @@ import { differenceInMonths } from "date-fns";
 import { ROLE_LABELS } from "@/lib/constants";
 
 
-export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary: number }) {
+export default function KasbonForm({ 
+  basicSalary: initialSalary,
+  initialName = "",
+  initialNik = ""
+}: { 
+  basicSalary: number;
+  initialName?: string;
+  initialNik?: string;
+}) {
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [agreed, setAgreed] = useState(false);
   const [showSOP, setShowSOP] = useState(false);
 
   // Form states for validation
-  const [employeeName, setEmployeeName] = useState("");
+  const [employeeName, setEmployeeName] = useState(initialName);
+  const [nik, setNik] = useState(initialNik);
+
   const [joinDate, setJoinDate] = useState("");
   const [spStatus, setSpStatus] = useState<string>("TIDAK");
   const [spDescription, setSpDescription] = useState("");
@@ -85,8 +96,9 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
     if (result.success) {
       setMessage({ type: "success", text: "Pengajuan kasbon berhasil dikirim! Menunggu verifikasi SPV Divisi." });
       setAgreed(false);
-      setEmployeeName("");
+      // Don't clear name and nik as they are fixed
       setJoinDate("");
+
       setRequestAmount("");
       setSpDescription("");
       setIsPreviousPaid("YA");
@@ -186,17 +198,33 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   type="text"
                   name="employeeName"
                   value={employeeName}
-                  onChange={handleNameChange}
+                  readOnly
                   required
-                  className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 placeholder:font-medium placeholder:italic"
-                  placeholder="masukkan nama"
+                  className="block w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 py-3 px-4 text-sm font-black text-zinc-500 cursor-not-allowed"
                 />
               </div>
 
               <div>
                 <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                  NIK (Nomor Induk Kependudukan)
+                </label>
+                <input
+                  type="text"
+                  name="nik"
+                  value={nik}
+                  readOnly
+                  required
+                  className="block w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 py-3 px-4 text-sm font-black text-zinc-500 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-zinc-600">
                   Divisi
                 </label>
+
                 <select
                   name="division"
                   required

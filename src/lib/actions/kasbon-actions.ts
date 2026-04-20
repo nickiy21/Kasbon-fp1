@@ -24,7 +24,9 @@ export async function submitKasbon(formData: FormData): Promise<KasbonResponse> 
   
   // New Fields
   const employeeName = formData.get("employeeName") as string;
+  const nik = formData.get("nik") as string;
   const division = formData.get("division") as any; // Cast to Division enum
+
   const joinDateInput = formData.get("joinDate") as string;
   const spStatusInput = formData.get("spStatus") === "YA";
   const isPreviousPaidInput = formData.get("isPreviousPaid") === "YA";
@@ -49,7 +51,9 @@ export async function submitKasbon(formData: FormData): Promise<KasbonResponse> 
         repaymentMonths: repaymentMonths,
         status: "PENDING",
         employeeName: employeeName,
+        nik: nik,
         division: division,
+
         joinDate: joinDate && !isNaN(joinDate.getTime()) ? joinDate : null,
         spStatus: spStatusInput,
         spDescription: spDescription || null,

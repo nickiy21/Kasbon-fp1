@@ -7,10 +7,12 @@ import { revalidatePath } from "next/cache";
 export async function registerUser(formData: FormData) {
   const username = formData.get("username") as string;
   const password = formData.get("password") as string;
+  const nik = formData.get("nik") as string;
 
-  if (!username || !password) {
-    return { success: false, error: "Username and password are required" };
+  if (!username || !password || !nik) {
+    return { success: false, error: "Nama Lengkap, Password, dan NIK wajib diisi" };
   }
+
 
   try {
     // Check if user exists
@@ -28,10 +30,12 @@ export async function registerUser(formData: FormData) {
       data: {
         username,
         password: hashedPassword,
+        nik,
         role: "EMPLOYEE",
         division: "MEKANIK", // Default starting division
       },
     });
+
 
 
     revalidatePath("/admin/members");
@@ -40,8 +44,15 @@ export async function registerUser(formData: FormData) {
     console.error("Registration error details:", error);
     // Provide a slightly more helpful error if it's a known prisma error
     if (error.code === 'P2002') {
-      return { success: false, error: "Username sudah terdaftar" };
+      if (error.meta?.target?.includes('username')) {
+        return { success: false, error: "Nama ini sudah terdaftar" };
+      }
+      if (error.meta?.target?.includes('nik')) {
+        return { success: false, error: "NIK ini sudah terdaftar" };
+      }
+      return { success: false, error: "Data sudah terdaftar" };
     }
+
     return { success: false, error: `Gagal membuat akun: ${error.message || "Unknown error"}` };
   }
 }

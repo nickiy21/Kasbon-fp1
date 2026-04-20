@@ -13,7 +13,9 @@ function LoginForm() {
 
   const [isRegistering, setIsRegistering] = useState(false);
   const [username, setUsername] = useState("");
+  const [nik, setNik] = useState("");
   const [password, setPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,8 +30,10 @@ function LoginForm() {
         const formData = new FormData();
         formData.append("username", username);
         formData.append("password", password);
+        formData.append("nik", nik);
         
         const result = await registerUser(formData);
+
         if (result.success) {
           // Auto login after registration
           const res = await signIn("credentials", {
@@ -90,7 +94,8 @@ function LoginForm() {
           <div className="space-y-4">
             <div>
               <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                Username
+                Nama Lengkap
+
               </label>
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-400">
@@ -102,10 +107,32 @@ function LoginForm() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="block w-full rounded-2xl border-2 border-zinc-100 bg-zinc-50/50 py-4 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:bg-white focus:outline-none focus:ring-4 focus:ring-red-600/10"
-                  placeholder="Masukkan username Anda"
+                  placeholder={isRegistering ? "Masukkan nama lengkap Anda" : "Masukkan nama lengkap"}
                 />
               </div>
             </div>
+
+            {isRegistering && (
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                  Nomor Induk Kependudukan (NIK)
+                </label>
+                <div className="relative mt-1">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-400">
+                    <User size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    value={nik}
+                    onChange={(e) => setNik(e.target.value)}
+                    className="block w-full rounded-2xl border-2 border-zinc-100 bg-zinc-50/50 py-4 pl-12 pr-4 text-sm font-black text-black transition-all focus:border-red-600 focus:bg-white focus:outline-none focus:ring-4 focus:ring-red-600/10"
+                    placeholder="Masukkan 16 digit NIK Anda"
+                  />
+                </div>
+              </div>
+            )}
+
 
             <div>
               <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">

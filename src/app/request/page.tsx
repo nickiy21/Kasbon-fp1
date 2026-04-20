@@ -17,6 +17,10 @@ export default async function RequestPage() {
     where: { userId: session.user.id },
   });
 
+  const userRecord = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
+
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <Link href="/dashboard" className="mb-6 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-zinc-400 hover:text-red-600 transition-colors">
@@ -32,7 +36,11 @@ export default async function RequestPage() {
         </p>
       </div>
 
-      <KasbonForm basicSalary={profile?.basicSalary || 0} />
+      <KasbonForm 
+        basicSalary={profile?.basicSalary || 0} 
+        initialName={userRecord?.username || ""} 
+        initialNik={userRecord?.nik || ""}
+      />
     </div>
   );
 }
