@@ -112,6 +112,55 @@ export default function Navbar() {
                       </span>
                     </div>
 
+                    {/* MOBILE NAV LINKS */}
+                    <div className="md:hidden mb-4 space-y-1 border-t border-zinc-50 pt-3">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Navigation</p>
+                      <Link 
+                        href="/dashboard" 
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-3 py-2 text-xs font-black uppercase text-zinc-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                      >
+                        Dashboard
+                      </Link>
+                      {session.user && (session.user as any).role === "EMPLOYEE" && (
+                        <Link 
+                          href="/request" 
+                          onClick={() => setIsProfileOpen(false)}
+                          className="block px-3 py-2 text-xs font-black uppercase text-zinc-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                        >
+                          Ajukan Kasbon
+                        </Link>
+                      )}
+                      {session.user && ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "ADMIN"].includes((session.user as any).role) && (
+                        <>
+                          <Link 
+                            href="/approvals" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="block px-3 py-2 text-xs font-black uppercase text-zinc-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                          >
+                            Persetujuan
+                          </Link>
+                          <Link 
+                            href="/history" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="block px-3 py-2 text-xs font-black uppercase text-zinc-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                          >
+                            Riwayat
+                          </Link>
+                        </>
+                      )}
+                      {session.user && (session.user as any).role === "ADMIN" && (
+                        <Link 
+                          href="/admin/members" 
+                          onClick={() => setIsProfileOpen(false)}
+                          className="block px-3 py-2 text-xs font-black uppercase text-red-600 bg-red-50 rounded-xl transition-colors"
+                        >
+                          Kelola Member
+                        </Link>
+                      )}
+                    </div>
+
+
                     <button
                       onClick={() => signOut()}
                       className="mt-2 w-full flex items-center justify-between group rounded-xl bg-zinc-50 p-3 text-red-600 hover:bg-red-50 transition-colors"
