@@ -1,0 +1,9 @@
+export const ROLE_LABELS: Record<string, string> = {
+  ADMIN: "ADMIN",
+  HC: "HC",
+  FINANCE: "SPV FINANCE",
+  DOORSMER: "SPV DOORSMER",
+  MARKETING: "SPV MARKETING",
+  MEKANIK: "SPV MEKANIK",
+  EMPLOYEE: "EMPLOYEE",
+};

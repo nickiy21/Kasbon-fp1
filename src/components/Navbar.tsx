@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { LogOut, User, ChevronDown } from "lucide-react";
+import { ROLE_LABELS } from "@/lib/constants";
+
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -61,7 +63,8 @@ export default function Navbar() {
                   href="/admin/members"
                   className="text-sm font-bold text-red-600 hover:text-zinc-900"
                 >
-                  Admin Member
+                  Kelola Member
+
                 </Link>
               )}
             </div>
@@ -83,7 +86,7 @@ export default function Navbar() {
                     {session?.user?.name || (session?.user as any).username}
                   </span>
                   <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-widest leading-none">
-                    {(session?.user as any).role}
+                    {ROLE_LABELS[(session?.user as any).role] || (session?.user as any).role}
                   </span>
                 </div>
                 <ChevronDown size={14} className={`text-zinc-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
@@ -104,7 +107,8 @@ export default function Navbar() {
                     <div className="mb-4 pt-3 border-t border-zinc-50">
                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Role Permission</p>
                       <span className="inline-block rounded-lg bg-red-600 px-2 py-1 text-[9px] font-black text-white uppercase tracking-wider">
-                        {(session?.user as any).role}
+                        {ROLE_LABELS[(session?.user as any).role] || (session?.user as any).role}
+
                       </span>
                     </div>
 

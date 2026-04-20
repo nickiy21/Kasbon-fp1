@@ -4,6 +4,8 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { Trash2, ChevronDown, ChevronUp, User, Calendar, CreditCard, Shield } from "lucide-react";
 import { deleteUser, updateUserRole } from "@/lib/actions/user-actions";
+import { ROLE_LABELS } from "@/lib/constants";
+
 
 export default function AdminMembersClient({ initialUsers }: { initialUsers: any[] }) {
   const [users, setUsers] = useState(initialUsers);
@@ -66,8 +68,9 @@ export default function AdminMembersClient({ initialUsers }: { initialUsers: any
                   className="rounded-lg border border-zinc-200 bg-white px-2 py-1 text-[10px] font-black uppercase text-zinc-600 focus:border-red-600 focus:outline-none"
                 >
                   {roles.map((r) => (
-                    <option key={r} value={r}>{r}</option>
+                    <option key={r} value={r}>{ROLE_LABELS[r] || r}</option>
                   ))}
+
                 </select>
               </div>
 

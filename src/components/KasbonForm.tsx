@@ -12,6 +12,8 @@ import {
   Info 
 } from "lucide-react";
 import { differenceInMonths } from "date-fns";
+import { ROLE_LABELS } from "@/lib/constants";
+
 
 export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary: number }) {
   const [loading, setLoading] = useState(false);
@@ -232,11 +234,12 @@ export default function KasbonForm({ basicSalary: initialSalary }: { basicSalary
                   required
                   className="block w-full rounded-xl border-2 border-zinc-200 bg-white py-3 px-4 text-sm font-black text-black transition-all focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-600/10 h-[46px]"
                 >
-                  <option value="HC">HC</option>
-                  <option value="FINANCE">FINANCE</option>
-                  <option value="DOORSMER">DOORSMER</option>
-                  <option value="MEKANIK">MEKANIK</option>
-                  <option value="MARKETING">MARKETING</option>
+                  <option value="HC">{ROLE_LABELS.HC}</option>
+                  <option value="FINANCE">{ROLE_LABELS.FINANCE}</option>
+                  <option value="DOORSMER">{ROLE_LABELS.DOORSMER}</option>
+                  <option value="MEKANIK">{ROLE_LABELS.MEKANIK}</option>
+                  <option value="MARKETING">{ROLE_LABELS.MARKETING}</option>
+
                 </select>
               </div>
 
