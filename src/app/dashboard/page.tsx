@@ -93,6 +93,11 @@ export default async function DashboardPage() {
               <ClipboardCheck size={18} /> Antrean Persetujuan
             </Link>
           )}
+          {user.role === "ADMIN" && (
+            <Link href="/admin/members" className="fastprix-button bg-red-600 gap-2 font-black italic">
+               Kelola Member
+            </Link>
+          )}
         </div>
       </header>
 
