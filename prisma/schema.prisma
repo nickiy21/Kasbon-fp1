@@ -54,6 +54,11 @@ enum KasbonStatus {
   PAID
 }
 
+enum KasbonType {
+  REGULAR
+  GANTI_RUGI
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -90,6 +95,7 @@ model KasbonRequest {
   isMedicalEmergency  Boolean      @default(false)
   repaymentMonths     Int          @default(1)
   status              KasbonStatus @default(PENDING)
+  type                KasbonType   @default(REGULAR)
   submissionDate      DateTime     @default(now())
   
   // New fields for the updated form

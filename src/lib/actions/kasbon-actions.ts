@@ -183,3 +183,58 @@ export async function approveByOwner(requestId: string, approve: boolean, notes?
     return { success: false, error: "Gagal memproses persetujuan akhir." };
   }
 }
+
+export async function createDirectKasbon(formData: FormData): Promise<KasbonResponse> {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user.role !== "FINANCE" && session.user.role !== "ADMIN")) {
+    return { success: false, error: "Unauthorized. Hanya Finance atau Admin yang dapat mengakses fitur ini." };
+  }
+
+  const targetUserId = formData.get("targetUserId") as string;
+  const amount = parseFloat(formData.get("amount") as string);
+  const purpose = formData.get("purpose") as string;
+  const repaymentMonths = parseInt(formData.get("repaymentMonths") as string || "1");
+
+  if (!targetUserId || isNaN(amount) || !purpose) {
+    return { success: false, error: "Data tidak lengkap." };
+  }
+
+  try {
+    const targetUser = await prisma.user.findUnique({
+      where: { id: targetUserId },
+      include: { employeeProfile: true }
+    });
+
+    if (!targetUser) {
+      return { success: false, error: "Karyawan tidak ditemukan." };
+    }
+
+    await prisma.kasbonRequest.create({
+      data: {
+        employeeId: targetUserId,
+        amount: amount,
+        purpose: purpose,
+        repaymentMonths: repaymentMonths,
+        status: "APPROVED",
+        type: "GANTI_RUGI",
+        employeeName: targetUser.name,
+        nik: targetUser.nik,
+        division: targetUser.division,
+        joinDate: targetUser.employeeProfile?.joinDate,
+        basicSalary: targetUser.employeeProfile?.basicSalary,
+        spStatus: targetUser.employeeProfile?.spStatus,
+        isPreviousPaid: true, // Bypassed
+        notes: "Input Langsung oleh Finance (Ganti Rugi)",
+        adminNotes: `Dibuat oleh ${session.user.name} (${session.user.role})`
+      } as any
+    });
+
+    revalidatePath("/admin/members");
+    revalidatePath("/dashboard");
+    revalidatePath("/history");
+    return { success: true };
+  } catch (err) {
+    console.error("Error creating direct kasbon:", err);
+    return { success: false, error: "Gagal membuat kasbon ganti rugi." };
+  }
+}

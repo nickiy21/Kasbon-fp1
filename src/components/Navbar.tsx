@@ -58,13 +58,20 @@ export default function Navbar() {
                   </Link>
                 </>
               )}
+              {session.user && ["ADMIN", "FINANCE"].includes((session.user as any).role) && (
+                <Link
+                  href="/admin/direct-kasbon"
+                  className="text-sm font-bold text-amber-600 hover:text-zinc-900"
+                >
+                  Ganti Rugi
+                </Link>
+              )}
               {session.user && (session.user as any).role === "ADMIN" && (
                 <Link
                   href="/admin/members"
                   className="text-sm font-bold text-red-600 hover:text-zinc-900"
                 >
                   Kelola Member
-
                 </Link>
               )}
             </div>
