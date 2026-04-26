@@ -336,7 +336,6 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                       <p className="text-sm font-black text-zinc-900 uppercase tracking-tighter">
                         {req.employeeName || req.employee?.name}
                       </p>
-                      <p className="text-[10px] text-zinc-400 italic font-medium">"{req.purpose}"</p>
                     </td>
                     <td className="p-4">
                       <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
@@ -350,9 +349,16 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className="text-[10px] font-bold text-red-600 uppercase tracking-widest">
-                        {req.leader?.username || req.leader?.name || "-"}
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-red-600 uppercase tracking-widest">
+                          {req.leader?.username || req.leader?.name || "-"}
+                        </span>
+                        {req.type === "GANTI_RUGI" && (
+                          <span className="text-[9px] font-black text-amber-600 italic">
+                            (*Kasbon Ganti Rugi)
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4">
                       <span className="text-sm font-black text-red-600">
@@ -368,8 +374,8 @@ export default function HistoryTableClient({ initialRequests }: HistoryTableClie
                       <StatusBadge status={req.status} />
                     </td>
                     <td className="p-4">
-                      <p className="max-w-[150px] truncate text-[10px] font-bold text-zinc-500 italic" title={req.notes}>
-                        {req.notes || "-"}
+                      <p className="max-w-[200px] text-[10px] font-bold text-zinc-500 italic" title={req.purpose}>
+                        {req.purpose || "-"}
                       </p>
                     </td>
                   </tr>

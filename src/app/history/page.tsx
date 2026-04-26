@@ -18,7 +18,8 @@ export default async function HistoryPage() {
     where: { 
       OR: [
         { accRole: role },
-        { id: role === "ADMIN" ? { not: "" } : undefined }
+        { id: role === "ADMIN" ? { not: "" } : undefined },
+        { type: "GANTI_RUGI", id: (role === "FINANCE" || role === "ADMIN") ? { not: "" } : { equals: "__non_existent__" } }
       ],
       status: { not: "PENDING" }
     } as any,
