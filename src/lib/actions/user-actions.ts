@@ -82,6 +82,23 @@ export async function updateUserRole(userId: string, role: any) {
   }
 }
 
+export async function resetUserPassword(userId: string, newPassword: string) {
+  if (!newPassword || newPassword.length < 4) {
+    return { success: false, error: "Password minimal 4 karakter" };
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Gagal mereset password" };
+  }
+}
+
 export async function getUsersWithStats() {
   try {
     const users = await prisma.user.findMany({
