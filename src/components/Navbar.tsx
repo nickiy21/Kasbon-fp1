@@ -35,12 +35,20 @@ export default function Navbar() {
                 Dashboard
               </Link>
               {session.user && (session.user as any).role === "EMPLOYEE" && (
-                <Link
-                  href="/request"
-                  className="text-sm font-medium text-zinc-600 hover:text-red-600"
-                >
-                  Ajukan Kasbon
-                </Link>
+                <>
+                  <Link
+                    href="/request"
+                    className="text-sm font-medium text-zinc-600 hover:text-red-600"
+                  >
+                    Ajukan Kasbon
+                  </Link>
+                  <Link
+                    href="/overtime/request"
+                    className="text-sm font-medium text-zinc-600 hover:text-red-600"
+                  >
+                    Ajukan Lembur
+                  </Link>
+                </>
               )}
               {session.user && ["HC", "FINANCE", "DOORSMER", "MARKETING", "MEKANIK", "ADMIN"].includes((session.user as any).role) && (
                 <>

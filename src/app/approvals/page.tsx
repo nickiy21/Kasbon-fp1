@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ApprovalsList from "@/components/ApprovalsList";
+import OvertimeApprovalsList from "@/components/OvertimeApprovalsList";
 
 export default async function ApprovalsPage() {
   const session = await getServerSession(authOptions);
@@ -27,6 +28,25 @@ export default async function ApprovalsPage() {
     orderBy: { submissionDate: "asc" },
   });
 
+  let overtimeRequests = [];
+  if (role === "FINANCE") {
+    overtimeRequests = await prisma.overtimeRequest.findMany({
+      where: { status: "SPV_APPROVED" },
+      include: { employee: true, spv: true },
+      orderBy: { createdAt: "asc" },
+    });
+  } else {
+    // Admin, HC, or other department verifiers might be chosen as SPV
+    overtimeRequests = await prisma.overtimeRequest.findMany({
+      where: { 
+        status: "PENDING",
+        spvId: session.user.id
+      },
+      include: { employee: true },
+      orderBy: { createdAt: "asc" },
+    });
+  }
+
 
 
   return (
@@ -41,6 +61,10 @@ export default async function ApprovalsPage() {
       </div>
 
       <ApprovalsList initialRequests={JSON.parse(JSON.stringify(requests))} />
+      
+      {overtimeRequests.length > 0 && (
+          <OvertimeApprovalsList initialRequests={JSON.parse(JSON.stringify(overtimeRequests))} />
+      )}
       
       <div className="mt-12 rounded-3xl bg-zinc-900 p-8 text-white">
         <h3 className="text-sm font-bold uppercase tracking-widest text-red-500">Panduan Verifikator</h3>

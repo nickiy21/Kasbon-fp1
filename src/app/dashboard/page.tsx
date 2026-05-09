@@ -23,6 +23,10 @@ export default async function DashboardPage() {
         orderBy: { submissionDate: "desc" },
         take: 5,
       },
+      overtimeRequests: {
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      },
     },
   });
 
@@ -77,11 +81,16 @@ export default async function DashboardPage() {
           </p>
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {user.role === "EMPLOYEE" && (
-            <Link href="/request" className="fastprix-button gap-2">
-              <Plus size={18} /> Ajukan Kasbon Baru
-            </Link>
+            <>
+              <Link href="/request" className="fastprix-button gap-2">
+                <Plus size={18} /> Ajukan Kasbon Baru
+              </Link>
+              <Link href="/overtime/request" className="fastprix-button bg-zinc-900 gap-2">
+                <Plus size={18} /> Ajukan Lembur Baru
+              </Link>
+            </>
           )}
           {isApprover && (
             <Link href="/history" className="fastprix-button bg-red-600/10 text-red-600 border-red-600/20 gap-2">
@@ -183,7 +192,7 @@ export default async function DashboardPage() {
             <>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-500">
-                  <History size={16} /> Pengajuan Terakhir
+                  <History size={16} /> Pengajuan Kasbon Terakhir
                 </h2>
               </div>
               
@@ -237,6 +246,58 @@ export default async function DashboardPage() {
                         <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-100">
                           <p className="text-[9px] font-black uppercase text-zinc-400 tracking-widest mb-1">Catatan Verifikator:</p>
                           <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.notes}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* OVERTIME HISTORY */}
+              <div className="mt-8 mb-4 flex items-center justify-between">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-500">
+                  <Clock size={16} /> Pengajuan Lembur Terakhir
+                </h2>
+              </div>
+              
+              <div className="space-y-4">
+                {user.overtimeRequests.length === 0 ? (
+                  <div className="fastprix-card text-center text-zinc-500">
+                    Belum ada data pengajuan lembur.
+                  </div>
+                ) : (
+                  user.overtimeRequests.map((req: any) => (
+                    <div key={req.id} className="fastprix-card flex flex-col gap-4 border-l-4 border-zinc-900">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-black italic text-zinc-900 uppercase">
+                            {format(new Date(req.overtimeDate), "dd/MM/yyyy")} ({req.overtimeDay})
+                          </span>
+                          <span className="text-xs font-semibold text-zinc-600 mt-1">
+                            {req.startTime} s/d {req.endTime}
+                          </span>
+                          <span className="text-[10px] text-zinc-400 italic line-clamp-1 mt-1">
+                            "{req.reason}"
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                           <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${req.status === 'PENDING' ? 'bg-yellow-50 text-yellow-700' : req.status === 'REJECTED' ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                              {req.status.replace('_', ' ')}
+                           </span>
+                        </div>
+                      </div>
+                      
+                      {req.spvNotes && (
+                        <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 mt-2">
+                          <p className="text-[9px] font-black uppercase text-blue-600 tracking-widest mb-1">Catatan SPV:</p>
+                          <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.spvNotes}</p>
+                        </div>
+                      )}
+                      
+                      {req.financeNotes && (
+                        <div className="bg-purple-50 p-3 rounded-xl border border-purple-100 mt-2">
+                          <p className="text-[9px] font-black uppercase text-purple-600 tracking-widest mb-1">Catatan Finance:</p>
+                          <p className="text-[10px] font-bold text-zinc-900 leading-relaxed">{req.financeNotes}</p>
                         </div>
                       )}
                     </div>

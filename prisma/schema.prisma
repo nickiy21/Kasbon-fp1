@@ -59,6 +59,13 @@ enum KasbonType {
   GANTI_RUGI
 }
 
+enum OvertimeStatus {
+  PENDING
+  SPV_APPROVED
+  FINANCE_APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -75,6 +82,11 @@ model User {
   requests            KasbonRequest[] @relation("EmployeeRequests")
   leaderVerifications KasbonRequest[] @relation("LeaderVerifications")
   ownerApprovals      KasbonRequest[] @relation("OwnerApprovals")
+  
+  // Relations for Overtime
+  overtimeRequests    OvertimeRequest[] @relation("EmployeeOvertime")
+  overtimeApprovals   OvertimeRequest[] @relation("SpvOvertimeApprovals")
+  financeOvertimeApprovals OvertimeRequest[] @relation("FinanceOvertimeApprovals")
 }
 
 model EmployeeProfile {
@@ -133,3 +145,32 @@ model KasbonRequest {
   adminNotes          String?
 }
 
+model OvertimeRequest {
+  id              String         @id @default(cuid())
+  employeeName    String
+  division        Division
+  address         String?
+  phoneNumber     String?
+  overtimeDay     String
+  overtimeDate    DateTime
+  startTime       String
+  endTime         String
+  reason          String         @db.Text
+  status          OvertimeStatus @default(PENDING)
+
+  employeeId      String
+  employee        User           @relation("EmployeeOvertime", fields: [employeeId], references: [id])
+
+  spvId           String
+  spv             User           @relation("SpvOvertimeApprovals", fields: [spvId], references: [id])
+
+  financeId       String?
+  finance         User?          @relation("FinanceOvertimeApprovals", fields: [financeId], references: [id])
+
+  // Response notes for each stage
+  spvNotes        String?
+  financeNotes    String?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
