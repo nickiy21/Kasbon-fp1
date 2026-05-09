@@ -6,7 +6,7 @@ import StatusBadge from "@/components/DashboardClient";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import Link from "next/link";
-import { Plus, LayoutDashboard, History, Wallet, ChevronLeft, AlertCircle, ClipboardCheck } from "lucide-react";
+import { Plus, LayoutDashboard, History, Wallet, ChevronLeft, AlertCircle, ClipboardCheck, Clock } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
