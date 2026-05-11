@@ -1,13 +1,101 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "library"
 }
 
 datasource db {
   provider = "mysql"
+}
+
+model User {
+  id                       String            @id @default(cuid())
+  name                     String?
+  username                 String            @unique
+  password                 String
+  role                     Role              @default(EMPLOYEE)
+  division                 Division?
+  createdAt                DateTime          @default(now())
+  nik                      String?           @unique
+  employeeProfile          EmployeeProfile?
+  requests                 KasbonRequest[]   @relation("EmployeeRequests")
+  leaderVerifications      KasbonRequest[]   @relation("LeaderVerifications")
+  ownerApprovals           KasbonRequest[]   @relation("OwnerApprovals")
+  overtimeRequests         OvertimeRequest[] @relation("EmployeeOvertime")
+  financeOvertimeApprovals OvertimeRequest[] @relation("FinanceOvertimeApprovals")
+  overtimeApprovals        OvertimeRequest[] @relation("SpvOvertimeApprovals")
+}
+
+model EmployeeProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  basicSalary   Float
+  joinDate      DateTime
+  spStatus      Boolean  @default(false)
+  isBlacklisted Boolean  @default(false)
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+model KasbonRequest {
+  id                 String       @id @default(cuid())
+  amount             Float
+  purpose            String
+  isMedicalEmergency Boolean      @default(false)
+  repaymentMonths    Int          @default(1)
+  status             KasbonStatus @default(PENDING)
+  submissionDate     DateTime     @default(now())
+  employeeName       String?
+  division           Division?    @default(DOORSMER)
+  joinDate           DateTime?
+  spStatus           Boolean?     @default(false)
+  isPreviousPaid     Boolean?     @default(true)
+  basicSalary        Float?
+  employeeId         String
+  leaderId           String?
+  ownerId            String?
+  rejectionReason    String?
+  spDescription      String?
+  accRole            Role?        @default(HC)
+  notes              String?
+  adminNotes         String?
+  financeNotes       String?
+  spvNotes           String?
+  nik                String?
+  type               KasbonType   @default(REGULAR)
+  employee           User         @relation("EmployeeRequests", fields: [employeeId], references: [id])
+  leader             User?        @relation("LeaderVerifications", fields: [leaderId], references: [id])
+  owner              User?        @relation("OwnerApprovals", fields: [ownerId], references: [id])
+
+  @@index([employeeId], map: "KasbonRequest_employeeId_fkey")
+  @@index([leaderId], map: "KasbonRequest_leaderId_fkey")
+  @@index([ownerId], map: "KasbonRequest_ownerId_fkey")
+}
+
+model OvertimeRequest {
+  id           String         @id @default(cuid())
+  employeeName String
+  division     Division
+  address      String?
+  phoneNumber  String?
+  overtimeDay  String
+  overtimeDate DateTime
+  startTime    String
+  endTime      String
+  reason       String         @db.Text
+  status       OvertimeStatus @default(PENDING)
+  employeeId   String
+  spvId        String
+  financeId    String?
+  spvNotes     String?
+  financeNotes String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  employee     User           @relation("EmployeeOvertime", fields: [employeeId], references: [id])
+  finance      User?          @relation("FinanceOvertimeApprovals", fields: [financeId], references: [id])
+  spv          User           @relation("SpvOvertimeApprovals", fields: [spvId], references: [id])
+
+  @@index([employeeId], map: "OvertimeRequest_employeeId_fkey")
+  @@index([financeId], map: "OvertimeRequest_financeId_fkey")
+  @@index([spvId], map: "OvertimeRequest_spvId_fkey")
 }
 
 enum Role {
@@ -64,113 +152,4 @@ enum OvertimeStatus {
   SPV_APPROVED
   FINANCE_APPROVED
   REJECTED
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  username      String    @unique
-  password      String
-  nik           String?   @unique
-  role          Role      @default(EMPLOYEE)
-  division      Division?
-  createdAt     DateTime  @default(now())
-  
-  employeeProfile EmployeeProfile?
-  
-  // Relations for Kasbon
-  requests            KasbonRequest[] @relation("EmployeeRequests")
-  leaderVerifications KasbonRequest[] @relation("LeaderVerifications")
-  ownerApprovals      KasbonRequest[] @relation("OwnerApprovals")
-  
-  // Relations for Overtime
-  overtimeRequests    OvertimeRequest[] @relation("EmployeeOvertime")
-  overtimeApprovals   OvertimeRequest[] @relation("SpvOvertimeApprovals")
-  financeOvertimeApprovals OvertimeRequest[] @relation("FinanceOvertimeApprovals")
-}
-
-model EmployeeProfile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id])
-  
-  basicSalary   Float
-  joinDate      DateTime
-  spStatus      Boolean   @default(false) // true if has active SP
-  isBlacklisted Boolean   @default(false)
-}
-
-model KasbonRequest {
-  id                  String       @id @default(cuid())
-  amount              Float
-  purpose             String
-  isMedicalEmergency  Boolean      @default(false)
-  repaymentMonths     Int          @default(1)
-  status              KasbonStatus @default(PENDING)
-  type                KasbonType   @default(REGULAR)
-  submissionDate      DateTime     @default(now())
-  
-  // New fields for the updated form
-  employeeName        String?
-  nik                 String?
-  division            Division?    @default(DOORSMER)
-  joinDate            DateTime?
-  spStatus            Boolean?     @default(false)
-  isPreviousPaid      Boolean?     @default(true)
-  basicSalary         Float?
-  
-  // Target role for approval
-  accRole             Role?        @default(HC)
-  
-  // Employee who requested
-  employeeId          String
-  employee            User         @relation("EmployeeRequests", fields: [employeeId], references: [id])
-  
-  // Leader (SPV) who verified
-  leaderId            String?
-  leader              User?        @relation("LeaderVerifications", fields: [leaderId], references: [id])
-  
-  // Owner who approved
-  ownerId             String?
-  owner               User?        @relation("OwnerApprovals", fields: [ownerId], references: [id])
-  
-  // Rejection reason
-  rejectionReason     String?
-  spDescription       String?
-  notes               String?
-  
-  // Response notes for each stage
-  spvNotes            String?
-  financeNotes        String?
-  adminNotes          String?
-}
-
-model OvertimeRequest {
-  id              String         @id @default(cuid())
-  employeeName    String
-  division        Division
-  address         String?
-  phoneNumber     String?
-  overtimeDay     String
-  overtimeDate    DateTime
-  startTime       String
-  endTime         String
-  reason          String         @db.Text
-  status          OvertimeStatus @default(PENDING)
-
-  employeeId      String
-  employee        User           @relation("EmployeeOvertime", fields: [employeeId], references: [id])
-
-  spvId           String
-  spv             User           @relation("SpvOvertimeApprovals", fields: [spvId], references: [id])
-
-  financeId       String?
-  finance         User?          @relation("FinanceOvertimeApprovals", fields: [financeId], references: [id])
-
-  // Response notes for each stage
-  spvNotes        String?
-  financeNotes    String?
-  
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
 }
